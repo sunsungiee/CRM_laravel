@@ -132,18 +132,6 @@
 
         @yield('content')
 
-        {{-- <script src="../../assets/js/jquery-3.7.1.min.js"></script>
-        <script src="../../assets/js/jquery.maskedinput.min.js"></script>
-        <script>
-            $("#task_button").click(function() {
-                $("#tasks_menu").slideToggle(300); // 300ms - длительность анимации
-            });
-
-            $("#burger_task_button").click(function() {
-                $("#burger_tasks_menu").slideToggle(300); // 300ms - длительность анимации
-            });
-        </script>
-        <script src="../../assets/js/header_fixed.js"></script> --}}
 </body>
 
 </html>

@@ -28,22 +28,23 @@ Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name
 Route::patch('/contacts/{contact}', [ContactController::class, 'update'])->name("contact.update");
 
 
+
 Route::get('/analytics', function () {
-    // здесь будет страница "рабочий стол"
+    // здесь будет страница "аналитика"
     return view('welcome');
 });
 
 Route::get('/tasks', function () {
-    // здесь будет страница "рабочий стол"
+    // здесь будет страница "текущие задачи"
     return view('welcome');
 });
 
 Route::get('/archive', function () {
-    // здесь будет страница "рабочий стол"
+    // здесь будет страница "архив"
     return view('welcome');
 });
 
 Route::get('/deals', function () {
-    // здесь будет страница "рабочий стол"
+    // здесь будет страница "сделки"
     return view('welcome');
 })->name("deal.main");

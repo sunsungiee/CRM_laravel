@@ -9,8 +9,25 @@ class ContactController extends Controller
 {
     public function index()
     {
-        $contacts = Contact::all();
-        return view("contact.main", compact("contacts"));
+        $search = request('search');
+
+        $sort = request()->input('sort', 'id'); // По умолчанию сортировка по ID
+        $direction = request()->input('direction', 'asc'); // Направление по умолчанию
+
+        $contacts = Contact::orderBy($sort, $direction)->when($search, function ($query) use ($search) {
+            return $query->where('surname', 'like', "%$search%")
+                ->orWhere('surname', 'like', "%$search%")
+                ->orWhere('name', 'like', "%$search%")
+                ->orWhere('phone', 'like', "%$search%")
+                ->orWhere('email', 'like', "%$search%")
+                ->orWhere('firm', 'like', "%$search%");
+        })->get();
+
+        return view('contact.main', compact("contacts"), [
+            'contacts' => $contacts,
+            'sort' => $sort,
+            'direction' => $direction
+        ]);
     }
 
     public function store()
@@ -26,6 +43,11 @@ class ContactController extends Controller
         Contact::create($data);
         return redirect()->route("contact.main");
     }
+
+    // public function sort()
+    // {
+
+    // }
 
 
     public function edit(Contact $contact)
@@ -44,5 +66,6 @@ class ContactController extends Controller
         ]);
 
         $contact->update($data);
+        return redirect()->route("contact.main");
     }
 }

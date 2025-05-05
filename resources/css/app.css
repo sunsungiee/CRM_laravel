@@ -8,12 +8,16 @@
 }
 
 body {
-    /* min-height: 100vh;
-    min-width: 100vw; */
     width: 100%;
-    /* background-color: rgba(223, 212, 197, 0.242); */
     font-weight: 500;
     background-color: rgba(144, 0, 210, 0.042);
+}
+
+:root {
+    --main: rgb(243, 227, 255);
+    --details: rgba(30, 1, 133, 0.76);
+    --buttons: rgb(79, 67, 151);
+    --btnhover: #5b509b;
 }
 
 .side_bar_menu {
@@ -22,6 +26,13 @@ body {
 
 .burger_btn {
     display: none;
+}
+
+.container {
+    max-width: 500px;
+    ;
+    padding: 20px;
+    margin: auto;
 }
 
 main {
@@ -33,6 +44,7 @@ main div {
     max-width: 100vw;
 }
 
+/* адаптив */
 @media (max-width: 1199px) {
     main {
         max-width: 1024px;
@@ -59,20 +71,6 @@ main div {
     }
 }
 
-.container {
-    max-width: 500px;
-    ;
-    padding: 20px;
-    margin: auto;
-}
-
-:root {
-    /* --main: rgba(83, 0, 151, 0.071); */
-    --main: rgb(243, 227, 255);
-    --details: rgba(30, 1, 133, 0.76);
-    /* -- btn-bg: ; */
-}
-
 a {
     color: var(--details);
 }
@@ -93,7 +91,6 @@ a {
     position: fixed;
 
 }
-
 
 .side_bar_menu ul {
     padding: 25px 0px;
@@ -173,7 +170,7 @@ a {
     align-items: center;
 }
 
-.header button {
+header button {
     padding: 5px;
     cursor: pointer;
 }
@@ -186,18 +183,28 @@ a {
 
 .tasks_table {
     width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 .tasks_table th {
     background-color: var(--main);
     cursor: pointer;
+    min-height: fit-content;
     user-select: none;
-}
-
-.tasks_table th,
-.tasks_table td {
     text-align: center;
     padding: 5px;
+}
+
+.tasks_table td {
+    text-align: center;
+    padding: 12px;
+}
+
+.tasks_table td:not(.actions) {
+    background-color: rgba(243, 227, 255, 0.342);
 }
 
 .modal {
@@ -273,7 +280,7 @@ a {
     width: 100%;
     margin: auto;
     cursor: pointer;
-    background-color: rgba(60, 38, 158, 0.81);
+    background-color: var(--buttons);
     border: none;
     border-radius: 5px;
     color: white;
@@ -281,7 +288,7 @@ a {
 }
 
 .add_btn:hover {
-    background-color: rgba(51, 1, 145, 0.85);
+    background-color: var(--btnhover);
 }
 
 .content_tasks {
@@ -314,9 +321,98 @@ a {
     max-height: 400px;
 }
 
-/* .actions {
+.actions {
+    text-align: center;
+    background-color: var(--main);
+    padding: 5px;
+    cursor: pointer;
+}
+
+.actions img {
+    width: 2vh;
+}
+
+.sort_btn {
+    width: 100%;
+    padding: 10px 0;
+    display: block;
+}
+
+.edit-btn, .btn-delete {
+    border: none;
+    width: 100%;
+    height: 100%;
+    padding: none;
+    background-color: inherit;
+    cursor: inherit;
+}
+
+.actions:hover, .edit-btn:hover, .btn-delete:hover {
+    background-color: rgb(219, 204, 247);
+}
+
+.add_task {
+    border: none;
+    background-color: rgb(79, 67, 151);
+    padding: 12px 40px;
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 3px;
+}
+
+.add_task:hover {
+    background-color: #5b509b;
+}
+
+.search-container {
+    margin: 20px 0;
+}
+
+#searchInput {
+    width: 100%;
+    border: none;
+    font-size: 16px;
+}
+
+#searchInput:focus-visible {
+    outline: none;
+}
+
+.reset_search {
+    background-color: transparent;
+    border: none;
+    font-size: 20px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.search_container {
+    width: 100%;
+    background-color: white;
+    max-width: 400px;
+    padding: 12px 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.search_form {
+    padding: 20px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
+}
 
-} */
+.search_btn {
+    border: none;
+    background-color: transparent;
+    width: 50px;
+    cursor: pointer;
+
+}
+
+.search_btn img {
+    width: 30px;
+}

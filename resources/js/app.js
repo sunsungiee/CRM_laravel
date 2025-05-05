@@ -23,11 +23,10 @@ closeModal.addEventListener("click", function (event) {
 });
 
 //открытие модального окна формы изменения
-var openUpdateModal = document.getElementById("open_update_modal");
+
+// var openUpdateModal = document.getElementById("open_update_modal");
 var closeUpdateModal = document.getElementById("close_update_modal");
 var updateModal = document.getElementById("update_modal");
-
-
 
 document.querySelectorAll('.edit-btn').forEach(btn => {
     btn.addEventListener('click', function () {
@@ -44,12 +43,14 @@ document.querySelectorAll('.edit-btn').forEach(btn => {
                 document.getElementById('contact_email').value = data.email;
                 document.getElementById('contact_phone').value = data.phone;
                 document.getElementById('contact_firm').value = data.firm;
+                const form = document.getElementById('update_form');
+                const routeTemplate = document.getElementById('updateRouteTemplate').value;
+                form.action = routeTemplate.replace(':id', data.id); // Подставляем реальный ID
 
                 updateModal.style.display = 'block';
             });
     });
 });
-
 
 closeUpdateModal.addEventListener("click", function () {
     updateModal.style.display = "none";
