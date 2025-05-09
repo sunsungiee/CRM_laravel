@@ -29,7 +29,7 @@
                         <li class="tasks" id="task_button"><a href="#">Задачи</a>
                             <div class="tasks_menu" id="tasks_menu">
                                 <ul>
-                                    <li><a href="current_tasks.php">Текущие задачи</a></li>
+                                    <li><a href="{{ route('task.main') }}">Текущие задачи</a></li>
                                     <li><a href="acrchive.php">Архив задач</a></li>
                                 </ul>
                             </div>

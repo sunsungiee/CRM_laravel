@@ -44,12 +44,6 @@ class ContactController extends Controller
         return redirect()->route("contact.main");
     }
 
-    // public function sort()
-    // {
-
-    // }
-
-
     public function edit(Contact $contact)
     {
         return response()->json($contact);

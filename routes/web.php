@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -19,23 +20,23 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+
+Route::get("/tasks", [TaskController::class, "index"])->name("task.main");
+Route::post("/tasks", [TaskController::class, "store"])->name("task.store");
+Route::get("/tasks/{task}/edit", [TaskController::class, "edit"])->name("task.edit");
+Route::patch("/tasks/{task}", [TaskController::class, "update"])->name("task.update");
+
 Route::get('/contacts', [ContactController::class, 'index'])->name("contact.main");
-
 Route::post('/contacts', [ContactController::class, 'store'])->name("contact.store");
-
 Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name("contact.edit");
-
 Route::patch('/contacts/{contact}', [ContactController::class, 'update'])->name("contact.update");
+
+
 
 
 
 Route::get('/analytics', function () {
     // здесь будет страница "аналитика"
-    return view('welcome');
-});
-
-Route::get('/tasks', function () {
-    // здесь будет страница "текущие задачи"
     return view('welcome');
 });
 

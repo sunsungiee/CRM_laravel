@@ -189,16 +189,20 @@ header button {
     overflow: hidden;
 }
 
+.tasks_table tr {
+    border-bottom: 1px solid rgb(0, 0, 0);
+}
+
 .tasks_table th {
     background-color: var(--main);
     cursor: pointer;
     min-height: fit-content;
     user-select: none;
     text-align: center;
-    padding: 5px;
+    padding: 15px;
 }
 
-.tasks_table td {
+.tasks_table td:not(.actions) {
     text-align: center;
     padding: 12px;
 }
@@ -222,8 +226,12 @@ header button {
 }
 
 .modal_content {
-    margin: auto;
+    /* margin: auto; */
+    transform: translate(-50%, 10px);
+    left: 50%;
+    right: 50%;
     width: 50vh;
+    position: absolute;
     background-color: white;
     padding: 25px;
     border-radius: 5px;
@@ -237,6 +245,7 @@ header button {
 .modal_header {
     display: flex;
     justify-content: space-between;
+    align-items: center;
 }
 
 #modal_header_title {
@@ -324,7 +333,6 @@ header button {
 .actions {
     text-align: center;
     background-color: var(--main);
-    padding: 5px;
     cursor: pointer;
 }
 
@@ -334,7 +342,6 @@ header button {
 
 .sort_btn {
     width: 100%;
-    padding: 10px 0;
     display: block;
 }
 
@@ -342,7 +349,7 @@ header button {
     border: none;
     width: 100%;
     height: 100%;
-    padding: none;
+    padding: 20px;
     background-color: inherit;
     cursor: inherit;
 }
@@ -393,7 +400,7 @@ header button {
     max-width: 400px;
     padding: 12px 20px;
     border: 1px solid #ddd;
-    border-radius: 4px;
+    border-radius: 5px;
     display: flex;
     justify-content: space-between;
 }
