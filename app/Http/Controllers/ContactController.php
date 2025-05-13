@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use App\Models\Contact;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,8 @@ class ContactController extends Controller
 
         $sort = request()->input('sort', 'id'); // По умолчанию сортировка по ID
         $direction = request()->input('direction', 'asc'); // Направление по умолчанию
+
+        $user = Auth::user();
 
         $contacts = Contact::orderBy($sort, $direction)->when($search, function ($query) use ($search) {
             return $query->where('surname', 'like', "%$search%")
@@ -26,7 +29,8 @@ class ContactController extends Controller
         return view('contact.main', compact("contacts"), [
             'contacts' => $contacts,
             'sort' => $sort,
-            'direction' => $direction
+            'direction' => $direction,
+            'user' => $user,
         ]);
     }
 
@@ -60,6 +64,13 @@ class ContactController extends Controller
         ]);
 
         $contact->update($data);
+        return redirect()->route("contact.main");
+    }
+
+    public function destroy(Contact $contact)
+    {
+        // $contact->delete();
+        $contact->restore();
         return redirect()->route("contact.main");
     }
 }

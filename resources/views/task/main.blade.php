@@ -1,4 +1,4 @@
-@extends('layots.header')
+@extends('layouts.header')
 
 @section('content')
     <div class="content tasks">
@@ -29,75 +29,92 @@
         </form>
 
         <table class="tasks_table" id="contacts_table">
-            {{-- <thead> --}}
-            {{-- <tr>
-                    <th data-column="surname">
+            <thead>
+                <tr>
+                    <th data-column="subject">
                         <a class="sort_btn"
-                            href="{{ route('contact.main', ['sort' => 'surname', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">Фамилия
-                            @if ($sort === 'surname')
+                            href="{{ route('task.main', ['sort' => 'subject', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">Тема
+                            @if ($sort === 'subject')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
-                    <th data-column="name">
+                    <th data-column="description">
                         <a class="sort_btn"
-                            href="{{ route('contact.main', ['sort' => 'name', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
-                            Имя
-                            @if ($sort === 'name')
+                            href="{{ route('task.main', ['sort' => 'description', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
+                            Описание
+                            @if ($sort === 'description')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
-                    <th data-column="phone">
+                    <th data-column="date">
                         <a class="sort_btn"
-                            href="{{ route('contact.main', ['sort' => 'phone', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
-                            Номер телефона
-                            @if ($sort === 'phone')
+                            href="{{ route('task.main', ['sort' => 'date', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
+                            Дата
+                            @if ($sort === 'date')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
-                    <th data-column="email">
+                    <th data-column="time">
                         <a class="sort_btn"
-                            href="{{ route('contact.main', ['sort' => 'email', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
-                            Эл. почта
-                            @if ($sort === 'email')
+                            href="{{ route('task.main', ['sort' => 'time', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
+                            Время
+                            @if ($sort === 'time')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
-                    <th data-column="firm">
-                        <a href="{{ route('contact.main', ['sort' => 'firm', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+                    <th data-column="priority">
+                        <a href="{{ route('task.main', ['sort' => 'priority', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
                             class="sort_btn">
-                            Организация
-                            @if ($sort === 'firm')
+                            Приоритет
+                            @if ($sort === 'priority')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
                     <th></th>
                     <th></th>
-                </tr> --}}
-            {{-- </thead> --}}
+                    <th></th>
+                </tr>
+            </thead>
+
             <tbody>
                 @foreach ($tasks as $task)
                     <tr>
-                        <td id="editSurname"> {{ $task->surname }} </td>
-                        <td>{{ $task->name }} </td>
-                        <td> {{ $task->email }} </td>
-                        <td> {{ $task->phone }} </td>
-                        <td>{{ $task->firm }}</td>
+                        <td> {{ $task->subject }} </td>
+                        <td> {{ $task->description }} </td>
+                        <td> {{ $task->date }} </td>
+                        <td> {{ $task->time }} </td>
+                        <td>{{ $task->priority['priority'] }}</td>
+                        <td class="actions">
+                            {{-- кнопка "Выполнено" --}}
+                            <form action="{{ route('task.delete', $task->id) }}" method="post" class="delete_form">
+                                @csrf
+                                @method('delete')
+                                <input type="hidden" value="2" name="status_id">
+                                <button class="btn-done" id="btn-done" title="Пометить как выполненное"
+                                    data-id="{{ $task->id }}">
+                                    <img src="{{ asset('images/icons/success.png') }}" alt="Выполнено">
+                                </button>
+                            </form>
+                        </td>
                         <td class="actions">
                             {{-- кнопка "изменить" --}}
-                            <button class="edit-btn" id="open_update_modal" title="Редактировать" type="button"
-                                data-id="{{ $tasks->id }}">
+                            <button class="edit-btn_task" id="open_update_modal" title="Редактировать" type="button"
+                                data-id="{{ $task->id }}">
                                 <img src="{{ asset('images/icons/edit.png') }}" alt="Изменить">
                             </button>
                         </td>
                         <td class="actions">
                             {{-- кнопка удалить --}}
-                            <form action="" method="post">
-                                <button class="btn-delete" title="Удалить" name="contact_id" value="$contact['id']">
+                            <form action="{{ route('task.delete', $task->id) }}" method="post" class="delete_form">
+                                @csrf
+                                @method('delete')
+                                <input type="hidden" value="4" name="status_id">
+                                <button class="btn-delete" title="Удалить" name="contact_id">
                                     <img src="{{ asset('images/icons/close2.png') }}" alt="Удалить">
                                 </button>
                             </form>
@@ -122,14 +139,9 @@
                 </div>
                 <hr style="width: 70%; margin:10px 0">
 
-
-                {{-- <input type="hidden" id="taskId" name="id"> --}}
-                {{-- <input type="hidden" id="updateRouteTemplate" value="{{ route('contact.update', ':id') }}"> --}}
-
                 <fieldset>
                     <legend>Контакт</legend>
                     <select name="contact_id" id="contact" class="add_select add">
-                        {{-- <option value="" selected disabled>Выберите контакт</option> --}}
                         <option value="" selected>Без контакта</option>
                         @foreach ($contacts as $contact)
                             <option value="{{ $contact->id }}">
@@ -167,12 +179,14 @@
                         <label for="{{ $priority->id }}">{{ $priority->priority }}</label>
                         <br>
                     @endforeach
+                    <input type="radio" name="priority_id" value="1">
                 </fieldset>
                 <button class="add_btn" type="submit">Добавить</button>
             </form>
         </div>
     </div>
 
+    {{-- ОБНОВЛЕНИЕ ЗАДАЧИ --}}
     <div class="modal" id="update_modal">
         <div class="modal_content">
             <form action="{{ route('task.update', ':id') }}" method="post" id="update_form" class="add_form">
@@ -180,7 +194,7 @@
                 @method('patch')
 
                 <div class="modal_header">
-                    <p id="modal_header_title">Обновить контакт</p>
+                    <p id="modal_header_title">Обновить задачу</p>
                     <button class="close_btn" type="reset"><img src="{{ asset('images/icons/close.png') }}"
                             alt="Закрыть" id="close_update_modal"></button>
                 </div>
@@ -191,11 +205,10 @@
 
                 <fieldset>
                     <legend>Контакт</legend>
-                    <select name="contact_id" id="contact" class="add_select add" required>
-                        <option value="" selected disabled>Выберите контакт</option>
-                        <option value="0" selected>Без контакта</option>
+                    <select name="contact_id" id="task_contact" class="add_select add" required>
+                        <option value="" selected>Без контакта</option>
                         @foreach ($contacts as $contact)
-                            <option value="{{ $contact->id }}">
+                            <option class="task_contact" value="{{ $contact->id }}">
                                 {{ $contact->surname . ' ' . $contact->name }}
                             </option>
                         @endforeach
@@ -205,29 +218,29 @@
 
                 <fieldset>
                     <legend>Тема задачи</legend>
-                    <input type="text" name="subject" class="add_input add" required>
+                    <input type="text" name="subject" id="task_subject" class="add_input add" required>
                 </fieldset>
 
                 <fieldset>
                     <legend>Описание задачи</legend>
-                    <textarea name="description" id="task_description" class="add_textarea add" required></textarea>
+                    <textarea name="description" id="task_description_update" class="add_textarea add" required></textarea>
                 </fieldset>
 
                 <fieldset>
                     <legend>Дата</legend>
-                    <input type="date" name="date" id="task_date" class="add_input add">
+                    <input type="date" name="date" id="task_date_update" class="add_input add">
                 </fieldset>
 
                 <fieldset>
                     <legend>Время</legend>
-                    <input type="time" name="time" id="task_time" class="add_input add">
+                    <input type="time" name="time" id="task_time_update" class="add_input add">
                 </fieldset>
 
                 <fieldset>
                     <legend>Приоритет</legend>
                     @foreach ($priorities as $priority)
-                        <input type="radio" name="priority_id" value="{{ $priority->id }}" id="{{ $priority->id }}"
-                            class="add_radio add" required>
+                        <input type="radio" name="task_priority_id" value="{{ $priority->id }}"
+                            class="task_priority_id" id="{{ $priority->id }}" class="add_radio add" required>
                         <label for="{{ $priority->id }}">{{ $priority->priority }}</label>
                         <br>
                     @endforeach

@@ -12,6 +12,10 @@ $("#burger_task_button").click(function () {
     $("#burger_tasks_menu").slideToggle(300); // 300ms - длительность анимации
 });
 
+$("#save_as").click(function () {
+    $("#save_as_menu").toggle();
+})
+
 //открытие модального окна добавления
 var openModal = document.getElementById("add_task");
 var closeModal = document.getElementById("close_modal");
@@ -21,9 +25,12 @@ openModal.addEventListener('click', function (event) {
     modal.style.display = "block";
 });
 
-closeModal.addEventListener("click", function (event) {
-    modal.style.display = "none";
-});
+if (closeModal) {
+    closeModal.addEventListener("click", function (event) {
+        modal.style.display = "none";
+    });
+}
+
 
 //открытие модального окна формы изменения
 
@@ -45,16 +52,58 @@ document.querySelectorAll('.edit-btn').forEach(btn => {
                 document.getElementById('contact_firm').value = data.firm;
                 const form = document.getElementById('update_form');
                 const routeTemplate = document.getElementById('updateRouteTemplate').value;
-                form.action = routeTemplate.replace(':id', data.id); // Подставляем реальный ID
+                form.action = routeTemplate.replace(':id', data.id);
 
                 updateModal.style.display = 'block';
             });
     });
 });
 
-closeUpdateModal.addEventListener("click", function () {
-    updateModal.style.display = "none";
+document.querySelectorAll('.edit-btn_task').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const taskId = this.getAttribute('data-id');
+        // AJAX-запрос для получения данных
+        fetch(`/tasks/${taskId}/edit`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('taskId').value = data.id;
+                document.getElementById('task_subject').value = data.subject;
+                document.getElementById('task_description_update').value = data.description;
+                document.getElementById('task_date_update').value = data.date || '';
+                document.getElementById('task_time_update').value = data.time ? data.time.substring(0, 5) : '';
+
+                document.querySelectorAll('.task_priority_id').forEach(radio => {
+                    if (radio.value == data.priority_id) {
+                        radio.checked = true;
+                    } else {
+                        radio.checked = false;
+                    }
+                });
+
+                document.querySelectorAll('.task_contact').forEach(option => {
+                    if (option.value == data.contact_id) {
+                        radio.selected = true;
+                    } else {
+                        radio.selected = false;
+                    }
+                });
+                const form = document.getElementById('update_form');
+                const routeTemplate = document.getElementById('updateRouteTemplate').value;
+                form.action = routeTemplate.replace(':id', data.id);
+
+                updateModal.style.display = 'block';
+
+
+            });
+
+    });
 });
+
+if (updateModal) {
+    closeUpdateModal.addEventListener("click", function () {
+        updateModal.style.display = "none";
+    });
+}
 
 window.onclick = function (event) {
     if (event.target == modal) {
@@ -73,3 +122,13 @@ var today = new Date().toISOString().split('T')[0];
 if (taskDate) {
     taskDate.setAttribute('min', today);
 }
+
+document.querySelectorAll(".delete_form").forEach(form => {
+    form.addEventListener("submit", function (event) {
+        if (!confirm('Подтвердите действие на сайте')) {
+            event.preventDefault(); // Останавливаем отправку формы, если пользователь нажал "Отмена"
+        }
+    });
+});
+
+

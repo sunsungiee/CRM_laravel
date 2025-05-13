@@ -1,4 +1,4 @@
-@extends('layots.header')
+@extends('layouts.header')
 
 @section('content')
     <div class="content tasks">
@@ -98,8 +98,10 @@
                         </td>
                         <td class="actions">
                             {{-- кнопка удалить --}}
-                            <form action="" method="post">
-                                <button class="btn-delete" title="Удалить" name="contact_id" value="$contact['id']">
+                            <form action="{{ route('contact.delete', $contact->id) }}" method="post" class="delete_form">
+                                @csrf
+                                @method('delete')
+                                <button class="btn-delete" title="Удалить" name="contact_id">
                                     <img src="{{ asset('images/icons/close2.png') }}" alt="Удалить">
                                 </button>
                             </form>
@@ -153,9 +155,10 @@
         </div>
     </div>
 
+    {{-- ОБНОВЛЕНИЕ КОНТАКТА --}}
     <div class="modal" id="update_modal">
         <div class="modal_content">
-            <form action="{{ route('contact.update', ':id') }}" method="post" id="update_form" class="add_form">
+            <form action="{{ route('task.update', ':id') }}" method="post" id="update_form" class="add_form">
                 @csrf
                 @method('patch')
                 <div class="modal_header">

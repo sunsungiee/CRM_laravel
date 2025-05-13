@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        $timezone = config('app.timezone'); // из .env: 'Europe/Moscow'
+
+        DB::statement("SET time_zone = '" . $timezone . "'");
     }
 }

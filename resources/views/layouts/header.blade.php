@@ -9,6 +9,7 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/burger.css', 'resources/js/burger.js'])
 
+    <link rel="icon" href="{{ asset('favicon2.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -30,7 +31,7 @@
                             <div class="tasks_menu" id="tasks_menu">
                                 <ul>
                                     <li><a href="{{ route('task.main') }}">Текущие задачи</a></li>
-                                    <li><a href="acrchive.php">Архив задач</a></li>
+                                    <li><a href="{{ route('task.archive') }}">Архив задач</a></li>
                                 </ul>
                             </div>
                         </li>
@@ -42,18 +43,20 @@
                 <ul>
                     <li>
                         <a href="#">
-                            <img src="" alt=""> $username
+                            {{ $user->name }}
                         </a>
                         <a style="display: block;">
                             <span style="color: gray; font-size: 12px;">
-                                $userpost
+                                {{ $user->post }}
                             </span>
                         </a>
                     </li>
                     <li>
-                        <a href="logout.php">
-                            <img src="#" alt="" class="logout_icon">Выйти
-                        </a>
+                        <form action="{{ route('logout') }}" method="post" class="logout">
+                            @csrf
+                            {{-- <img src="#" alt="" class="logout_icon"> --}}
+                            <button type="submit">Выйти</button>
+                        </form>
                     </li>
                 </ul>
             </div>
@@ -86,7 +89,7 @@
                                         </a>
                                         <hr>
 
-                                        <a href="acrchive.php">
+                                        <a href="{{ route('task.archive') }}">
                                             <li>Архив задач</li>
                                         </a>
                                         <hr>
@@ -109,20 +112,20 @@
 
                     <li>
                         <a href="#">
-                            <img src="" alt=""> $username
+                            {{ $user->name }}
                         </a>
                         <a style="display: block;">
                             <span style="color: gray; font-size: 12px;">
-                                $userpost
+                                {{ $user->post }}
                             </span>
                         </a>
                     </li>
                     <hr>
-
-                    <li>
-                        <a href="logout.php">
-                            <img src="#" alt="" class="logout_icon">Выйти
-                        </a>
+                    <form action="{{ route('logout') }}" method="post" class="logout">
+                        <img src="#" alt="" class="logout_icon">
+                        @csrf
+                        <button type="submit">Выйти</button>
+                    </form>
                     </li>
                     <hr>
 
@@ -131,7 +134,15 @@
         </div>
 
         @yield('content')
-
+        <script>
+            // Запуск команды для истекших задач
+            setInterval(() => {
+                fetch("{{ route('run_task') }}")
+                    .then(response => response.json())
+                    .then(data => console.log("Команда выполнена:", data.output))
+                    .catch(err => console.error("Ошибка:", err));
+            }, 60 * 1000); // Каждые 60 секунд
+        </script>
 </body>
 
 </html>
