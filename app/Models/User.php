@@ -18,6 +18,11 @@ class User extends Authenticatable
         return $this->hasMany(Task::class);
     }
 
+    public function deals()
+    {
+        return $this->hasMany(Deal::class);
+    }
+
     /**
      * The attributes that are mass assignable.
      *

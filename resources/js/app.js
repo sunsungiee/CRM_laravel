@@ -126,7 +126,7 @@ if (taskDate) {
 document.querySelectorAll(".delete_form").forEach(form => {
     form.addEventListener("submit", function (event) {
         if (!confirm('Подтвердите действие на сайте')) {
-            event.preventDefault(); // Останавливаем отправку формы, если пользователь нажал "Отмена"
+            event.preventDefault(); // Останавливаем отправку формы
         }
     });
 });

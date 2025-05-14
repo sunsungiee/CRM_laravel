@@ -62,6 +62,7 @@
             </div>
         </nav>
 
+        {{-- БУРГЕР МЕНЮ --}}
         <div class="burger_nav" id="burger_nav">
             <div class="burger_menu_content" id="burger_menu_content">
 
@@ -100,7 +101,7 @@
                         </a>
                         <hr>
 
-                        <li><a href="deals.php">Сделки</a></li>
+                        <li><a href="{{ route('deal.main') }}">Сделки</a></li>
                         <hr>
 
                         <li><a href="contacts.php">Контакты</a></li>

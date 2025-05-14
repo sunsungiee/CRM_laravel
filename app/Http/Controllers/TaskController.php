@@ -21,16 +21,15 @@ class TaskController extends Controller
         $userId = Auth::id();
 
         $tasks = Task::where("user_id", $userId)
-            // ->where("status_id", 1)
             ->orderBy($sort, $direction)
-            // ->join('statuses', 'tasks.status_id', '=', 'statuses.id')
             ->join('priorities', 'tasks.priority_id', '=', 'priorities.id')
+            ->join('contacts', 'tasks.contact_id', '=', 'contacts.id')
             ->when($search, function ($query) use ($search) {
                 return $query->where('tasks.subject', 'like', "%$search%")
                     ->orWhere('tasks.description', 'like', "%$search%")
                     ->orWhere('tasks.date', 'like', "%$search%")
                     ->orWhere('tasks.time', 'like', "%$search%")
-                    // ->orWhere('statuses.status', 'like', "%$search%")
+                    ->orWhere('contacts.contact', 'like', "%$search%")
                     ->orWhere('priorities.priority', 'like', "%$search%");
             })
             ->select('tasks.*')
