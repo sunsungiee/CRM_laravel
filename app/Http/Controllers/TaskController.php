@@ -22,8 +22,8 @@ class TaskController extends Controller
 
         $tasks = Task::where("user_id", $userId)
             ->orderBy($sort, $direction)
-            ->join('priorities', 'tasks.priority_id', '=', 'priorities.id')
             ->join('contacts', 'tasks.contact_id', '=', 'contacts.id')
+            ->join('priorities', 'tasks.priority_id', '=', 'priorities.id')
             ->when($search, function ($query) use ($search) {
                 return $query->where('tasks.subject', 'like', "%$search%")
                     ->orWhere('tasks.description', 'like', "%$search%")
@@ -37,6 +37,8 @@ class TaskController extends Controller
 
         $priorities = Priority::all();
         $contacts = Contact::all();
+
+        // dd($tasks);
         return view('task.main', [
             'tasks' => $tasks,
             'sort' => $sort,

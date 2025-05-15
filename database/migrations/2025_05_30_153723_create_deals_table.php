@@ -15,14 +15,14 @@ return new class extends Migration
     {
         Schema::create('deals', function (Blueprint $table) {
             $table->id();
-            $table->string("subject");
+            $table->string("subject")->default("Новая сделка");
             $table->date("end_date")->nullable();
             $table->time("end_time")->nullable();
-            $table->string("sum");
+            $table->unsignedBigInteger("sum");
 
             $table->unsignedBigInteger("user_id")->references("id")->on("users");
             $table->unsignedBigInteger("contact_id")->references("id")->on("contacts");;
-            $table->string("phase_id")->references("id")->on("phases");
+            $table->unsignedBigInteger("phase_id")->references("id")->on("phases")->default(1);
 
             $table->timestamps();
             $table->softDeletes();

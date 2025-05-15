@@ -26,7 +26,7 @@
                         <h2 style="width: fit-content;"><a href="analytics.php" style="color: black;">CRM</a> </h2>
                     </div>
                     <ul>
-                        <li><a href="analytics.php">Аналитика</a></li>
+                        <a href="{{ route('analytics') }}">Аналитика</a>
                         <li class="tasks" id="task_button"><a href="#">Задачи</a>
                             <div class="tasks_menu" id="tasks_menu">
                                 <ul>
@@ -36,7 +36,14 @@
                             </div>
                         </li>
 
-                        <li><a href="{{ route('deal.main') }}">Сделки</a></li>
+                        <li id="deal_button"><a href="#">Сделки</a>
+                            <div class="tasks_menu" id="deals_menu">
+                                <ul>
+                                    <li><a href="{{ route('deal.main') }}">Текущие сделки</a></li>
+                                    <li><a href="{{ route('deal.archive') }}">Архив сделок</a></li>
+                                </ul>
+                            </div>
+                        </li>
                         <li><a href="{{ route('contact.main') }}">Контакты</a></li>
                     </ul>
                 </div>
@@ -70,13 +77,13 @@
                     <div class="burger_header">
                         <h2 style="width: fit-content;"><a href="analytics.php" style="color: black;">CRM</a> </h2>
                         <a href="#" id="burger_close" class="burger_btn">
-                            <img src="../../assets/img/icons/close.svg" alt="Закрыть">
+                            <img src="{{ asset('images/icons/close.svg') }}" alt="Закрыть">
                         </a>
                     </div>
                     <ul class="burger_header_links">
                         <hr>
 
-                        <a href="analytics.php">
+                        <a href="{{ route('analytics') }}">
                             <li>Аналитика</li>
                         </a>
                         <hr>
@@ -85,7 +92,7 @@
                                 <div class="tasks_menu" id="burger_tasks_menu">
                                     <ul>
                                         <hr>
-                                        <a href="current_tasks.php">
+                                        <a href="{{ route('task.main') }}">
                                             <li>Текущие задачи</li>
                                         </a>
                                         <hr>
@@ -101,7 +108,21 @@
                         </a>
                         <hr>
 
-                        <li><a href="{{ route('deal.main') }}">Сделки</a></li>
+                        <li id="burger_deal_button"><a href="#">Сделки</a>
+                            <div class="tasks_menu" id="burger_deals_menu">
+                                <ul>
+                                    <hr id="hr">
+                                    <a href="{{ route('deal.main') }}">
+                                        <li>Текущие сделки</li>
+                                    </a>
+                                    <hr>
+                                    <a href="{{ route('deal.archive') }}">
+                                        <li>Архив сделок</li>
+                                    </a>
+                                    <hr>
+                                </ul>
+                            </div>
+                        </li>
                         <hr>
 
                         <li><a href="contacts.php">Контакты</a></li>

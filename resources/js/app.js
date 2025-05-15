@@ -9,7 +9,15 @@ $("#task_button").click(function () {
 });
 
 $("#burger_task_button").click(function () {
-    $("#burger_tasks_menu").slideToggle(300); // 300ms - длительность анимации
+    $("#burger_tasks_menu").slideToggle(300);
+});
+
+$("#deal_button").click(function () {
+    $("#deals_menu").slideToggle(300); // 300ms - длительность анимации
+});
+
+$("#burger_deal_button").click(function () {
+    $("#burger_deals_menu").slideToggle(300);
 });
 
 $("#save_as").click(function () {
@@ -82,9 +90,9 @@ document.querySelectorAll('.edit-btn_task').forEach(btn => {
 
                 document.querySelectorAll('.task_contact').forEach(option => {
                     if (option.value == data.contact_id) {
-                        radio.selected = true;
+                        option.selected = true;
                     } else {
-                        radio.selected = false;
+                        option.selected = false;
                     }
                 });
                 const form = document.getElementById('update_form');
@@ -94,6 +102,45 @@ document.querySelectorAll('.edit-btn_task').forEach(btn => {
                 updateModal.style.display = 'block';
 
 
+            });
+
+    });
+});
+
+document.querySelectorAll('.edit-btn_deal').forEach(btn => {
+    btn.addEventListener('click', function () {
+        const dealId = this.getAttribute('data-id');
+        // AJAX-запрос для получения данных
+        fetch(`/deals/${dealId}/edit`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('dealId').value = data.id;
+                document.getElementById('deal_subject').value = data.subject;
+                document.getElementById('deal_date_update').value = data.end_date || '';
+                document.getElementById('deal_time_update').value = data.end_time;
+                document.getElementById('sum_update').value = data.sum;
+
+                document.querySelectorAll('.deal_phase_id').forEach(radio => {
+                    if (radio.value == data.phase_id) {
+                        radio.checked = true;
+                    } else {
+                        radio.checked = false;
+                    }
+                });
+
+                document.querySelectorAll('.task_contact').forEach(option => {
+                    if (option.value == data.contact_id) {
+                        option.selected = true;
+                    } else {
+                        option.selected = false;
+                    }
+                });
+
+                const form = document.getElementById('update_form');
+                const routeTemplate = document.getElementById('updateRouteTemplate').value;
+                form.action = routeTemplate.replace(':id', data.id);
+
+                updateModal.style.display = 'block';
             });
 
     });
@@ -116,11 +163,16 @@ window.onclick = function (event) {
 }
 
 var taskDate = document.getElementById("task_date");
+var dealDate = document.getElementById("deal_date");
 
 var today = new Date().toISOString().split('T')[0];
 
 if (taskDate) {
     taskDate.setAttribute('min', today);
+}
+
+if (dealDate) {
+    dealDate.setAttribute('min', today);
 }
 
 document.querySelectorAll(".delete_form").forEach(form => {

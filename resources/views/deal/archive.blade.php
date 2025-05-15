@@ -3,7 +3,7 @@
 @section('content')
     <div class="content tasks">
         <div class="header tasks">
-            <h1>Архив задач</h1>
+            <h1>Архив сделок</h1>
             <div class="header_btns">
                 <button class="add_task" onclick="printTable()" id="add_task">Распечатать</button>
                 <div><button class="add_task" id="save_as">Сохранить как</button>
@@ -25,7 +25,7 @@
 
         <hr>
 
-        <form method="GET" action="{{ route('task.archive') }}" class="search_form">
+        <form method="GET" action="{{ route('deal.archive') }}" class="search_form">
             <div class="search_container">
                 <input type="text" tabindex="1" name="search" placeholder="Поиск..." id="searchInput"
                     value="{{ request('search') }}">
@@ -40,28 +40,20 @@
         </form>
 
         <table class="tasks_table" id="archive-table">
+
             <thead>
                 <tr>
                     <th data-column="subject">
                         <a class="sort_btn"
-                            href="{{ route('task.archive', ['sort' => 'subject', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">Тема
+                            href="{{ route('deal.main', ['sort' => 'subject', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">Тема
                             @if ($sort === 'subject')
-                                {{ $direction === 'asc' ? '↑' : '↓' }}
-                            @endif
-                        </a>
-                    </th>
-                    <th data-column="description">
-                        <a class="sort_btn"
-                            href="{{ route('task.archive', ['sort' => 'description', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
-                            Описание
-                            @if ($sort === 'description')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
                     <th data-column="contact">
                         <a class="sort_btn"
-                            href="{{ route('task.main', ['sort' => 'contact', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
+                            href="{{ route('deal.main', ['sort' => 'contact', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
                             Клиент
                             @if ($sort === 'contact')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
@@ -70,36 +62,36 @@
                     </th>
                     <th data-column="date">
                         <a class="sort_btn"
-                            href="{{ route('task.archive', ['sort' => 'date', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
+                            href="{{ route('deal.main', ['sort' => 'end_date', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
                             Дата
-                            @if ($sort === 'date')
+                            @if ($sort === 'end_date')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
                     <th data-column="time">
                         <a class="sort_btn"
-                            href="{{ route('task.archive', ['sort' => 'time', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
+                            href="{{ route('deal.main', ['sort' => 'end_time', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
                             Время
-                            @if ($sort === 'time')
+                            @if ($sort === 'end_time')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
-                    <th data-column="priority">
-                        <a href="{{ route('task.archive', ['sort' => 'priority', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+                    <th data-column="sum">
+                        <a href="{{ route('deal.main', ['sort' => 'sum', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
                             class="sort_btn">
-                            Приоритет
-                            @if ($sort === 'priority')
+                            Прибыль
+                            @if ($sort === 'sum')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
                     </th>
-                    <th data-column="status">
-                        <a href="{{ route('task.archive', ['sort' => 'status', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+                    <th data-column="phase">
+                        <a href="{{ route('deal.main', ['sort' => 'phase', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
                             class="sort_btn">
-                            Статус
-                            @if ($sort === 'status')
+                            Стадия сделки
+                            @if ($sort === 'phase')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
@@ -108,31 +100,18 @@
             </thead>
 
             <tbody>
-                @foreach ($tasks as $task)
+                @foreach ($deals as $deal)
                     <tr>
-                        <td> {{ $task->subject }} </td>
-                        <td> {{ $task->description }} </td>
-                        <td> {{ $task->contact['surname'] . ' ' . $task->contact['name'] }} </td>
-                        <td> {{ $task->date }} </td>
-                        <td> {{ $task->time }} </td>
-                        <td>
-                            {{ $task->priority['priority'] }}
-                        </td>
-                        <td class="archive_status">
-                            <img src="{{ $task->status['id'] == 2
-                                ? asset('images/icons/success.png')
-                                : ($task->status['id'] == 3
-                                    ? asset('images/icons/expired.png')
-                                    : ($task->status['id'] == 4
-                                        ? asset('images/icons/delete.png')
-                                        : asset('images/icons/default.png'))) }}"
-                                alt="">
-                            {{ $task->status['status'] }}
-
-                        </td>
+                        <td> {{ $deal->subject }} </td>
+                        <td> {{ $deal->contact['surname'] . ' ' . $deal->contact['name'] }} </td>
+                        <td> {{ $deal->formatted_date }} </td>
+                        <td> {{ $deal->formatted_time }} </td>
+                        <td> {{ $deal->sum }} Руб.</td>
+                        <td>{{ $deal->phase['phase'] }}</td>
                     </tr>
                 @endforeach
             </tbody>
+
         </table>
 
         <!-- SheetJS (xlsx) -->

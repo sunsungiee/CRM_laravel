@@ -382,7 +382,7 @@ header button {
     font-size: 16px;
 }
 
-#searchInput:focus-visible {
+#searchInput:focus-visible, #month:focus-visible {
     outline: none;
 }
 
@@ -477,4 +477,67 @@ header button {
 #save_as_menu button:hover {
     background-color: rgba(255, 255, 255, 0.719);
     color: inherit;
+}
+
+/* Убирает стрелки в большинстве браузеров */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+}
+
+/* Для Firefox */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.container_analytics {
+    padding: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.analytics_item {
+    width: fit-content;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+.analytics_item h2 {
+    text-align: center;
+}
+
+.dealChart {
+    width: 50vw;
+}
+
+.dealChart canvas {
+    width: 100%;
+}
+
+.table_canvas {
+    min-width: 10vw;
+    min-height: 5vh;
+}
+
+.table_canvas td, .table_canvas th {
+    border: 1px solid gray;
+    height: 5vh;
+}
+
+.table_canvas td {
+    width: 10vw;
+    text-align: center;
+}
+
+#month {
+    width: 100%;
+    min-height: 100%;
+    background-color: inherit;
+    border: none;
+    text-align: center;
 }

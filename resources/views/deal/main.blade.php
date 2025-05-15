@@ -13,6 +13,15 @@
         </div>
 
         <hr>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <form method="GET" action="{{ route('deal.main') }}" class="search_form">
             <div class="search_container">
@@ -95,22 +104,22 @@
                     <tr>
                         <td> {{ $deal->subject }} </td>
                         <td> {{ $deal->contact['surname'] . ' ' . $deal->contact['name'] }} </td>
-                        <td> {{ $deal->date }} </td>
-                        <td> {{ $deal->time }} </td>
-                        <td> {{ $deal->sum }} </td>
+                        <td> {{ $deal->formatted_date }} </td>
+                        <td> {{ $deal->formatted_time }} </td>
+                        <td> {{ $deal->sum }} Руб.</td>
                         <td>{{ $deal->phase['phase'] }}</td>
-                        {{-- <td class="actions">
+                        <td class="actions">
                             кнопка "Выполнено"
-                            <form action="{{ route('task.delete', $task->id) }}" method="post" class="delete_form">
+                            <form action="{{ route('deal.delete', $deal->id) }}" method="post" class="delete_form">
                                 @csrf
                                 @method('delete')
-                                <input type="hidden" value="2" name="status_id">
+                                <input type="hidden" value="4" name="phase_id">
                                 <button class="btn-done" id="btn-done" title="Пометить как выполненное"
                                     data-id="{{ $deal->id }}">
                                     <img src="{{ asset('images/icons/success.png') }}" alt="Выполнено">
                                 </button>
                             </form>
-                        </td> --}}
+                        </td>
                         <td class="actions">
                             {{-- кнопка "изменить" --}}
                             <button class="edit-btn_deal" id="open_update_modal" title="Редактировать" type="button"
@@ -123,7 +132,7 @@
                             <form action="{{ route('deal.delete', $deal->id) }}" method="post" class="delete_form">
                                 @csrf
                                 @method('delete')
-                                <input type="hidden" value="4" name="status_id">
+                                <input type="hidden" value="5" name="phase_id">
                                 <button class="btn-delete" title="Удалить" name="contact_id">
                                     <img src="{{ asset('images/icons/close2.png') }}" alt="Удалить">
                                 </button>
@@ -159,41 +168,41 @@
                     </fieldset>
 
                     <fieldset>
-                        <legend>Тема задачи</legend>
+                        <legend>Тема сделки</legend>
                         <input type="text" name="subject" class="add_input add" required>
                     </fieldset>
 
                     <fieldset>
-                        <legend>Описание задачи</legend>
-                        <textarea name="description" id="deal_description" class="add_textarea add" required></textarea>
+                        <legend>Контрольная дата</legend>
+                        <input type="date" name="end_date" id="deal_date" class="add_input add">
                     </fieldset>
 
                     <fieldset>
-                        <legend>Дата</legend>
-                        <input type="date" name="date" id="deal_date" class="add_input add">
+                        <legend>Контрольное время</legend>
+                        <input type="time" name="end_time" id="deal_time" class="add_input add">
                     </fieldset>
 
                     <fieldset>
-                        <legend>Время</legend>
-                        <input type="time" name="time" id="deal_time" class="add_input add">
+                        <legend>Сумма сделки</legend>
+                        <input type="number" name="sum" max="9999999999" class="add_input add" required>
                     </fieldset>
 
                     <fieldset>
                         <legend>Стадия сделки</legend>
                         @foreach ($phases as $phase)
-                            <input type="radio" name="deal_phase_id" value="{{ $phase->id }}"
-                                class="deal_priority_id" id="{{ $phase->id }}" class="add_radio add" required>
+                            <input type="radio" name="phase_id" value="{{ $phase->id }}" class="deal_priority_id"
+                                id="{{ $phase->id }}" class="add_radio add" required>
                             <label for="{{ $phase->id }}">{{ $phase->phase }}</label>
                             <br>
                         @endforeach
-                        <input type="radio" name="deal_phase_id" id="">
+                        <input type="radio" name="phase_id" id="">
                     </fieldset>
                     <button class="add_btn" type="submit">Добавить</button>
                 </form>
             </div>
         </div>
 
-        {{-- ОБНОВЛЕНИЕ ЗАДАЧИ --}}
+        {{-- ОБНОВЛЕНИЕ СДЕЛКИ --}}
         <div class="modal" id="update_modal">
             <div class="modal_content">
                 <form action="{{ route('deal.update', ':id') }}" method="post" id="update_form" class="add_form">
@@ -201,14 +210,14 @@
                     @method('patch')
 
                     <div class="modal_header">
-                        <p id="modal_header_title">Обновить задачу</p>
+                        <p id="modal_header_title">Обновить сделку</p>
                         <button class="close_btn" type="reset"><img src="{{ asset('images/icons/close.png') }}"
                                 alt="Закрыть" id="close_update_modal"></button>
                     </div>
                     <hr style="width: 70%; margin:10px 0">
 
                     <input type="hidden" id="dealId" name="id">
-                    <input type="hidden" id="updateRouteTemplate" value="{{ route('contact.update', ':id') }}">
+                    <input type="hidden" id="updateRouteTemplate" value="{{ route('deal.update', ':id') }}">
 
                     <fieldset>
                         <legend>Контакт</legend>
@@ -224,30 +233,31 @@
                     </fieldset>
 
                     <fieldset>
-                        <legend>Тема задачи</legend>
+                        <legend>Тема сделки</legend>
                         <input type="text" name="subject" id="deal_subject" class="add_input add" required>
                     </fieldset>
 
                     <fieldset>
-                        <legend>Описание задачи</legend>
-                        <textarea name="description" id="deal_description_update" class="add_textarea add" required></textarea>
+                        <legend>Заключительная дата</legend>
+                        <input type="date" name="end_date" id="deal_date_update" class="add_input add">
                     </fieldset>
 
                     <fieldset>
-                        <legend>Дата</legend>
-                        <input type="date" name="date" id="deal_date_update" class="add_input add">
+                        <legend>Заключительное время</legend>
+                        <input type="time" name="end_time" id="deal_time_update" class="add_input add">
                     </fieldset>
 
                     <fieldset>
-                        <legend>Время</legend>
-                        <input type="time" name="time" id="deal_time_update" class="add_input add">
+                        <legend>Сумма сделки</legend>
+                        <input type="number" name="sum" max="9999999999" id="sum_update" class="add_input add"
+                            required>
                     </fieldset>
 
                     <fieldset>
                         <legend>Стадия сделки</legend>
                         @foreach ($phases as $phase)
-                            <input type="radio" name="deal_phase_id" value="{{ $phase->id }}"
-                                class="task_priority_id" id="{{ $phase->id }}" class="add_radio add" required>
+                            <input type="radio" name="phase_id" value="{{ $phase->id }}" class="deal_phase_id"
+                                id="{{ $phase->id }}" class="add_radio add" required>
                             <label for="{{ $phase->id }}">{{ $phase->phase }}</label>
                             <br>
                         @endforeach

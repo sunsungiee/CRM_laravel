@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\AnalyticsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -22,6 +23,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
+Route::get('/analytics/data', [AnalyticsController::class, 'getData'])->name('analytics.data');
+
 // АВТОРИЗАЦИЯ
 Route::get("/login", [AuthController::class, "showLoginForm"])->name("showLoginForm")->middleware('guest');
 Route::post("/login", [AuthController::class, "login"])->name("login");
@@ -39,13 +43,16 @@ Route::patch("/tasks/{task}", [TaskController::class, "update"])->name("task.upd
 Route::delete("/tasks/{task}", [TaskController::class, "destroy"])->name("task.delete")->middleware('auth');
 
 Route::get('/run_task', [TaskController::class, 'runScheduler'])->name('run_task');
-Route::get("/taks/archive", [TaskController::class, "showArchive"])->name("task.archive")->middleware("auth");
+Route::get("/tasks/archive", [TaskController::class, "showArchive"])->name("task.archive")->middleware("auth");
 
 // СДЕЛКИ
 Route::get('/deals', [DealController::class, "index"])->name("deal.main")->middleware('auth');
 Route::post('/deals', [DealController::class, "store"])->name("deal.store")->middleware('auth');
-Route::post('/deals/{deal}/edit', [DealController::class, "edit"])->name("deal.edit")->middleware('auth');
-Route::post('/deals/{deal}', [DealController::class, "update"])->name("deal.update")->middleware('auth');
+Route::get('/deals/{deal}/edit', [DealController::class, "edit"])->name("deal.edit")->middleware('auth');
+Route::patch('/deals/{deal}', [DealController::class, "update"])->name("deal.update")->middleware('auth');
+Route::delete("/deals/{deal}", [DealController::class, "destroy"])->name("deal.delete")->middleware('auth');
+
+Route::get("/deals/archive", [DealController::class, "showArchive"])->name("deal.archive")->middleware("auth");
 
 // КОНТАКТЫ
 Route::get('/contacts', [ContactController::class, 'index'])->name("contact.main")->middleware('auth');
@@ -53,8 +60,3 @@ Route::post('/contacts', [ContactController::class, 'store'])->name("contact.sto
 Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name("contact.edit")->middleware('auth');
 Route::patch('/contacts/{contact}', [ContactController::class, 'update'])->name("contact.update")->middleware('auth');
 Route::delete("/contacts/{contact}", [ContactController::class, "destroy"])->name("contact.delete")->middleware('auth');
-
-Route::get('/analytics', function () {
-    // здесь будет страница "аналитика"
-    return view('welcome');
-});

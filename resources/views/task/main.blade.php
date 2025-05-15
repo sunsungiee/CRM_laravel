@@ -48,6 +48,15 @@
                             @endif
                         </a>
                     </th>
+                    <th data-column="contact">
+                        <a class="sort_btn"
+                            href="{{ route('task.main', ['sort' => 'contact', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
+                            Клиент
+                            @if ($sort === 'contact')
+                                {{ $direction === 'asc' ? '↑' : '↓' }}
+                            @endif
+                        </a>
+                    </th>
                     <th data-column="date">
                         <a class="sort_btn"
                             href="{{ route('task.main', ['sort' => 'date', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
@@ -86,6 +95,7 @@
                     <tr>
                         <td> {{ $task->subject }} </td>
                         <td> {{ $task->description }} </td>
+                        <td> {{ $task->contact['surname'] . ' ' . $task->contact['name'] }} </td>
                         <td> {{ $task->date }} </td>
                         <td> {{ $task->time }} </td>
                         <td>{{ $task->priority['priority'] }}</td>
