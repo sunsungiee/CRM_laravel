@@ -5,6 +5,7 @@ use App\Http\Controllers\ContactController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AnalyticsController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,13 +19,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    // здесь будет страница "рабочий стол"
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, "index"])->name("welcome");
+Route::get('/data', [WelcomeController::class, "getData"]);
+Route::get('/tasks_data', [WelcomeController::class, 'getTasksData']);
 
 Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
 Route::get('/analytics/data', [AnalyticsController::class, 'getData'])->name('analytics.data');
+Route::get('/analytics/all-time-data', [AnalyticsController::class, 'getAllTimeData']);
 
 // АВТОРИЗАЦИЯ
 Route::get("/login", [AuthController::class, "showLoginForm"])->name("showLoginForm")->middleware('guest');

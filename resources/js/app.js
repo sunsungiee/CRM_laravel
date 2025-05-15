@@ -29,9 +29,11 @@ var openModal = document.getElementById("add_task");
 var closeModal = document.getElementById("close_modal");
 var modal = document.getElementById("modal");
 
-openModal.addEventListener('click', function (event) {
-    modal.style.display = "block";
-});
+if (openModal) {
+    openModal.addEventListener('click', function (event) {
+        modal.style.display = "block";
+    });
+}
 
 if (closeModal) {
     closeModal.addEventListener("click", function (event) {

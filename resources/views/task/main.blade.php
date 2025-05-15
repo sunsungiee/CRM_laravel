@@ -95,7 +95,7 @@
                     <tr>
                         <td> {{ $task->subject }} </td>
                         <td> {{ $task->description }} </td>
-                        <td> {{ $task->contact['surname'] . ' ' . $task->contact['name'] }} </td>
+                        <td> {{ $task->contact ? $task->contact['surname'] . ' ' . $task->contact['name'] : '' }} </td>
                         <td> {{ $task->date }} </td>
                         <td> {{ $task->time }} </td>
                         <td>{{ $task->priority['priority'] }}</td>

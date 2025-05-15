@@ -83,6 +83,10 @@ a {
     min-width: 15%;
 }
 
+.side_bar_menu a:hover {
+    color: rgba(30, 1, 133, 0.521);
+}
+
 .side_bar_menu_content {
     display: flex;
     flex-direction: column;
@@ -183,6 +187,7 @@ header button {
 
 .tasks_table {
     width: 100%;
+
     border-collapse: separate;
     border-spacing: 0;
     border-radius: 5px;
@@ -495,24 +500,24 @@ input[type="number"] {
 .container_analytics {
     padding: 50px;
     display: flex;
+    flex-direction: column;
     align-items: center;
 }
 
 .analytics_item {
     width: fit-content;
     margin: auto;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 40px;
 }
 
 .analytics_item h2 {
     text-align: center;
 }
 
-.dealChart {
+.dealChart:not(.double .dealChart) {
     width: 50vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .dealChart canvas {
@@ -534,10 +539,30 @@ input[type="number"] {
     text-align: center;
 }
 
-#month {
-    width: 100%;
-    min-height: 100%;
-    background-color: inherit;
-    border: none;
+.double {
+    display: flex;
+
+    justify-content: space-around;
+    gap: 5vw;
+
+}
+
+.double .dealChart {
+    width: 25vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main_info section {
+    padding: 25px;
     text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main_info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }

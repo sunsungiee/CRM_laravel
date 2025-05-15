@@ -26,7 +26,12 @@
                         <h2 style="width: fit-content;"><a href="analytics.php" style="color: black;">CRM</a> </h2>
                     </div>
                     <ul>
-                        <a href="{{ route('analytics') }}">Аналитика</a>
+                        <a href="{{ route('welcome') }}">
+                            <li>Рабочий стол</li>
+                        </a>
+                        <a href="{{ route('analytics') }}">
+                            <li>Аналитика</li>
+                        </a>
                         <li class="tasks" id="task_button"><a href="#">Задачи</a>
                             <div class="tasks_menu" id="tasks_menu">
                                 <ul>

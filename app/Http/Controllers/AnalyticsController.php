@@ -14,7 +14,7 @@ class AnalyticsController extends Controller
     {
         $user = Auth::user();
 
-        $monthNames = [
+        $months = [
             'Jan' => 'Январь',
             'Feb' => 'Февраль',
             'Mar' => 'Март',
@@ -29,74 +29,111 @@ class AnalyticsController extends Controller
             'Dec' => 'Декабрь'
         ];
 
-        $deals = Deal::withTrashed()
-            ->whereHas('phase', function ($query) {
-                $query->whereIn('id', ['4', '5']);
-            })
-            ->get();
-
-        $stats = [];
-
-        foreach ($deals as $deal) {
-            $status = $deal->phase->id;
-            $date = $deal->deleted_at ?: now();
-            $shortMonth = $date->format('M');
-
-            $ruMonth = $monthNames[$shortMonth] ?? $shortMonth;
-
-            if (!isset($stats[$ruMonth])) {
-                $stats[$ruMonth] = [4 => 0, 5 => 0];
-            }
-
-            $stats[$ruMonth][$status]++;
-        }
-        ksort($stats);
-
-
-        // dd($deals);
-        return view('analytics', [
-            'stats' => $stats,
-            'user' => $user,
-            'months' => $monthNames,
-        ]);
+        return view('analytics', compact('months', 'user'));
     }
 
     public function getData(Request $request)
     {
-        $selectedMonth = $request->query('month');
+        $year = $request->query('year', now()->year);
 
         $monthNames = [
-            'Jan' => 'Январь',
-            'Feb' => 'Февраль',
-            'Mar' => 'Март',
-            'Apr' => 'Апрель',
-            'May' => 'Май',
-            'Jun' => 'Июнь',
-            'Jul' => 'Июль',
-            'Aug' => 'Август',
-            'Sep' => 'Сентябрь',
-            'Oct' => 'Октябрь',
-            'Nov' => 'Ноябрь',
-            'Dec' => 'Декабрь'
+            'Январь',
+            'Февраль',
+            'Март',
+            'Апрель',
+            'Май',
+            'Июнь',
+            'Июль',
+            'Август',
+            'Сентябрь',
+            'Октябрь',
+            'Ноябрь',
+            'Декабрь'
         ];
 
+        $labels = $monthNames;
 
-        $dateStart = \Carbon\Carbon::createFromFormat('M', $selectedMonth)->startOfMonth();
-        $dateEnd = $dateStart->copy()->endOfMonth();
+        $completed = array_fill(0, 12, 0);
+        $inProgress = array_fill(0, 12, 0);
+        $canceled = array_fill(0, 12, 0);
 
         $deals = Deal::withTrashed()
             ->whereHas('phase', function ($query) {
-                $query->whereIn('id', [4, 5]);
+                $query->whereIn('id', [1, 2, 3, 4, 5]);
             })
-            ->whereBetween('deleted_at', [$dateStart, $dateEnd])
+            ->when($year, function ($query, $year) {
+                return $query
+                    ->where(function ($q) use ($year) {
+                        $q->whereNotNull('deleted_at')->whereYear('deleted_at', $year);
+                    })
+                    ->orWhere(function ($q) use ($year) {
+                        $q->whereNull('deleted_at')->whereYear('updated_at', $year);
+                    });
+            })
             ->get();
 
-        $completed = $deals->where('phase.id', 4)->count();
-        $ruMonth = $monthNames[$selectedMonth] ?? $selectedMonth;
+        foreach ($deals as $deal) {
+            $date = $deal->deleted_at ?? $deal->updated_at;
+
+            if (!$date) {
+                continue; // пропускаем сделки без дат
+            }
+
+            $monthNum = (int) \Carbon\Carbon::parse($date)->format('n');
+            $status = $deal->phase->id;
+
+            if ($status == 4) {
+                $completed[$monthNum - 1] += 1;
+            } elseif ($status == 5) {
+                $canceled[$monthNum - 1] += 1;
+            } elseif (in_array($status, [1, 2, 3])) {
+                $inProgress[$monthNum - 1] += 1;
+            }
+        }
+
+        $totalCompleted = array_sum($completed);
+        $totalCanceled = array_sum($canceled);
+        $totalInProgress = array_sum($inProgress);
+        $totalAll = $totalCompleted + $totalCanceled + $totalInProgress;
+
+        $percentCompleted = $totalAll > 0 ? round(($totalCompleted / $totalAll) * 100, 1) : 0;
 
         return response()->json([
-            'month' => $ruMonth,
+            'labels' => $labels,
             'completed' => $completed,
+            'canceled' => $canceled,
+            'inProgress' => $inProgress,
+            'summary' => [
+                'total' => $totalAll,
+                'completed' => $totalCompleted,
+                'canceled' => $totalCanceled,
+                'percentCompleted' => $percentCompleted . '%',
+                'averagePerMonth' => round($totalAll / 12, 2)
+            ]
+        ]);
+    }
+
+    public function getAllTimeData()
+    {
+        $deals = Deal::withTrashed()
+            ->whereHas('phase', function ($query) {
+                $query->whereIn('id', [1, 2, 3, 4, 5]);
+            })
+            ->get();
+
+        $totalCompleted = $deals->where('phase_id', 4)->count();
+        $totalCanceled = $deals->where('phase_id', 5)->count();
+        $totalInProgress = $deals->whereIn('phase_id', [1, 2, 3])->count();
+
+        return response()->json([
+            'summary' => [
+                'completed' => $totalCompleted,
+                'canceled' => $totalCanceled,
+                'inProgress' => $totalInProgress,
+                'total' => $totalCompleted + $totalCanceled + $totalInProgress,
+                'percentCompleted' => $totalCompleted > 0 ? round(($totalCompleted / ($totalCompleted + $totalCanceled + $totalInProgress)) * 100, 1) . '%' : '0%',
+                'percentInProgress' => $totalInProgress > 0 ? round(($totalInProgress / ($totalCompleted + $totalCanceled + $totalInProgress)) * 100, 1) . '%' : '0%'
+            ]
         ]);
     }
 }
