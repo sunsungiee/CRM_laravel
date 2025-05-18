@@ -195,7 +195,6 @@
                             <label for="{{ $phase->id }}">{{ $phase->phase }}</label>
                             <br>
                         @endforeach
-                        <input type="radio" name="phase_id" id="">
                     </fieldset>
                     <button class="add_btn" type="submit">Добавить</button>
                 </form>

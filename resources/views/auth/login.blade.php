@@ -18,12 +18,12 @@
 
             <input type="email" name="email" placeholder="Эл. почта" required autofocus>
             <input type="password" name="password" placeholder="Пароль" required>
-            <div class="remember_me">
+            {{-- <div class="remember_me">
                 <input type="checkbox" id="remember" name="remember">
                 <label for="remember">
                     Запомнить меня
                 </label>
-            </div>
+            </div> --}}
             <p><a href="{{ route('showRegisterForm') }}">Зарегистрируйтесь</a>, чтобы стать частью
                 команды</p>
 

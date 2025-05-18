@@ -151,7 +151,6 @@ class TaskController extends Controller
 
     public function runScheduler()
     {
-        // Выполняем Artisan-команду
         Artisan::call('tasks:update-expired');
 
         return response()->json([

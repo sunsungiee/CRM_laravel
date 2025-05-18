@@ -18,15 +18,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-Route::get('/', [WelcomeController::class, "index"])->name("welcome");
-Route::get('/data', [WelcomeController::class, "getData"]);
-Route::get('/tasks_data', [WelcomeController::class, 'getTasksData']);
-
-Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics');
-Route::get('/analytics/data', [AnalyticsController::class, 'getData'])->name('analytics.data');
-Route::get('/analytics/all-time-data', [AnalyticsController::class, 'getAllTimeData']);
-
 // АВТОРИЗАЦИЯ
 Route::get("/login", [AuthController::class, "showLoginForm"])->name("showLoginForm")->middleware('guest');
 Route::post("/login", [AuthController::class, "login"])->name("login");
@@ -35,6 +26,17 @@ Route::get("/register", [AuthController::class, "showRegisterForm"])->name("show
 Route::post("/register", [AuthController::class, "register"])->name("register");
 // ВЫХОД
 Route::post("/logout", [AuthController::class, "logout"])->name("logout");
+
+//РАБОЧИЙ СТОЛ
+Route::get('/', [WelcomeController::class, "index"])->name("welcome")->middleware("auth");
+Route::get('/data', [WelcomeController::class, "getData"])->middleware("auth");
+Route::get('/tasks_data', [WelcomeController::class, 'getTasksData'])->middleware("auth");
+//АНАЛИТИКА
+Route::get('/analytics', [AnalyticsController::class, 'index'])->name('analytics')->middleware("auth");
+Route::get('/analytics/data', [AnalyticsController::class, 'getData'])->name('analytics.data')->middleware("auth");
+Route::get('/analytics/all-time-data', [AnalyticsController::class, 'getAllTimeData'])->middleware("auth");
+
+
 // ЗАДАЧИ
 Route::get("/tasks", [TaskController::class, "index"])->name("task.main")->middleware('auth');
 Route::post("/tasks", [TaskController::class, "store"])->name("task.store")->middleware('auth');
@@ -42,7 +44,7 @@ Route::get("/tasks/{task}/edit", [TaskController::class, "edit"])->name("task.ed
 Route::patch("/tasks/{task}", [TaskController::class, "update"])->name("task.update")->middleware('auth');
 // удаление задачи
 Route::delete("/tasks/{task}", [TaskController::class, "destroy"])->name("task.delete")->middleware('auth');
-
+//запуск автоудаления просроченных задач
 Route::get('/run_task', [TaskController::class, 'runScheduler'])->name('run_task');
 Route::get("/tasks/archive", [TaskController::class, "showArchive"])->name("task.archive")->middleware("auth");
 

@@ -26,6 +26,10 @@ return new class extends Migration
 
             $table->timestamps();
             $table->softDeletes();
+
+            $table->foreign("user_id")->references("id")->on("users");
+            $table->foreign("contact_id")->references("id")->on("contacts");
+            $table->foreign("phase_id")->references("id")->on("phases");
         });
     }
 

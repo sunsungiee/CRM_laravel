@@ -11,10 +11,4 @@ export default defineConfig({
             refresh: true,
         }),
     ],
-    // resolve: {
-    //     alias: {
-    //         '$': 'jquery',
-    //         'jquery': resolve(__dirname, 'node_modules/jquery/dist/jquery.min.js'),
-    //     },
-    // }
 });

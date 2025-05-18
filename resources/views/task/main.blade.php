@@ -189,7 +189,6 @@
                         <label for="{{ $priority->id }}">{{ $priority->priority }}</label>
                         <br>
                     @endforeach
-                    <input type="radio" name="priority_id" value="1">
                 </fieldset>
                 <button class="add_btn" type="submit">Добавить</button>
             </form>

@@ -23,7 +23,7 @@ class AuthController extends Controller
 
         if (Auth::attempt($data, $request->remember)) {
             $request->session()->regenerate();
-            return redirect()->intended('/contacts');
+            return redirect()->intended('welcome');
         }
 
         return back()->withErrors([
@@ -56,7 +56,7 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect('/contacts');
+        return redirect()->route("welcome");
     }
 
     // Выход
@@ -67,6 +67,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route("contact.main");
+        return redirect()->route("welcome");
     }
 }
