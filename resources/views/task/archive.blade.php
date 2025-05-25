@@ -11,7 +11,6 @@
                         <div>
                             <button onclick="exportTable('xlsx')">Сохранить как Excel (.xlsx)</button>
                             <button onclick="exportTable('csv')">Сохранить как CSV (.csv)</button>
-                            <button onclick="exportTable('json')">Сохранить как JSON (.json)</button>
                             <button onclick="exportTable('pdf')">Сохранить как PDF (.pdf)</button>
                         </div>
                     </div>
@@ -113,8 +112,8 @@
                         <td> {{ $task->subject }} </td>
                         <td> {{ $task->description }} </td>
                         <td> {{ $task->contact ? $task->contact['surname'] . ' ' . $task->contact['name'] : '' }} </td>
-                        <td> {{ $task->date }} </td>
-                        <td> {{ $task->time }} </td>
+                        <td> {{ $task->formatted_date }} </td>
+                        <td> {{ $task->formatted_time }} </td>
                         <td>
                             {{ $task->priority['priority'] }}
                         </td>
@@ -160,10 +159,6 @@
                             bookType: 'csv',
                             type: 'file'
                         });
-                        break;
-                    case 'json':
-                        const json = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                        downloadFile(`архив_${getCurrentDate()}.json`, JSON.stringify(json, null, 2));
                         break;
                     case 'pdf':
                         exportToPDF(table);

@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     formatter: function (value, ctx) {
                         const total = ctx.chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
                         const percentage = ((value / total) * 100).toFixed(1) + '%';
-                        return `${percentage}`;
+                        return value > 0 ? percentage : '';
                     },
                     color: '#fff', // цвет текста
                     font: {
@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     formatter: function (value, ctx) {
                         const total = ctx.chart.data.datasets[0].data.reduce((acc, val) => acc + val, 0);
                         const percentage = ((value / total) * 100).toFixed(1) + '%';
-                        return `${percentage}`;
+                        return value > 0 ? percentage : '';
                     },
                     color: '#fff', // цвет текста
                     font: {

@@ -109,7 +109,6 @@
                         <td> {{ $deal->sum }} Руб.</td>
                         <td>{{ $deal->phase['phase'] }}</td>
                         <td class="actions">
-                            кнопка "Выполнено"
                             <form action="{{ route('deal.delete', $deal->id) }}" method="post" class="delete_form">
                                 @csrf
                                 @method('delete')

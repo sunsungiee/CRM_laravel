@@ -24,14 +24,14 @@ class WelcomeController extends Controller
 
         $nextWeek = now()->addDays(7); // Через 7 дней
 
-        $actualTasks = Task::all();
+        $actualTasks = Task::orderBy("date", "asc")->get();
         try {
             $soonTasks = Task::whereNotNull('date')
                 ->where("priority_id", "!=", "3")
                 ->whereDate('date', '<=', $nextWeek)
                 ->leftJoin('contacts', 'tasks.contact_id', '=', 'contacts.id')
                 ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.id')
-                ->orderBy("priorities.priority", "asc")
+                ->orderBy("tasks.date", "asc")
                 ->get([
                     'tasks.*'
                 ]);

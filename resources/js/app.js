@@ -90,6 +90,14 @@ document.querySelectorAll('.edit-btn_task').forEach(btn => {
                     }
                 });
 
+                document.querySelectorAll('.task_status_id').forEach(radio => {
+                    if (radio.value == data.status_id) {
+                        radio.checked = true;
+                    } else {
+                        radio.checked = false;
+                    }
+                });
+
                 document.querySelectorAll('.task_contact').forEach(option => {
                     if (option.value == data.contact_id) {
                         option.selected = true;
@@ -102,8 +110,6 @@ document.querySelectorAll('.edit-btn_task').forEach(btn => {
                 form.action = routeTemplate.replace(':id', data.id);
 
                 updateModal.style.display = 'block';
-
-
             });
 
     });

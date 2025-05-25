@@ -15,12 +15,12 @@ class Task extends Model
 
     public function getFormattedDateAttribute()
     {
-        return $this->date ? \Carbon\Carbon::parse($this->end_date)->format('d.m.Y') : '';
+        return $this->date ? \Carbon\Carbon::parse($this->date)->format('d.m.Y') : '';
     }
 
     public function getFormattedTimeAttribute()
     {
-        return $this->time ? \Carbon\Carbon::parse($this->end_time)->format('H:i') : '';
+        return $this->time ? \Carbon\Carbon::parse($this->time)->format('H:i') : '';
     }
 
     public function status()

@@ -13,7 +13,15 @@
         </div>
 
         <hr>
-
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form method="GET" action="{{ route('task.main') }}" class="search_form">
             <div class="search_container">
                 <input type="text" tabindex="1" name="search" placeholder="Поиск..." id="searchInput"
@@ -27,6 +35,128 @@
                 <img src="{{ asset('images/icons/search.png') }}" alt="Искать">
             </button>
         </form>
+
+        <div class="view-toggle">
+            <button id="toggle-table" class="active">Таблица</button>
+            <button id="toggle-kanban">Kanban</button>
+        </div>
+
+        <div class="kanban_board" id="kanban_board" style="display: none;">
+            <div class="kanban_column" data-status="new">
+                <h3>Новые</h3>
+                <hr>
+                <div class="kanban_tasks">
+                    @foreach ($tasks->where('task_status', 'Новое')->filter(fn($task) => !$task->trashed()) as $task)
+                        <div class="kanban_task_card">
+                            <p><b>{{ $task->subject }}</b></p>
+                            <p>{{ $task->description }}</p>
+                            <br>
+                            <p><b>Клиент:</b>
+                                {{ $task->contact ? $task->contact['surname'] . ' ' . $task->contact['name'] : '' }}</p>
+                            <p><b>До</b> {{ $task->formatted_date }} {{ $task->formatted_time }} </p>
+                            <p><b>Приоритет: </b>{{ $task->task_priority }}</p>
+                            <p><b>Исполнитель: </b> {{ $task->user['surname'] }} {{ $task->user['name'] }}</p>
+                            <br>
+                            <div class="kanban_actions">
+
+                                <div class="actions">
+                                    {{-- кнопка "изменить" --}}
+                                    <button class="edit-btn_task" title="Редактировать" type="button"
+                                        data-id="{{ $task->id }}">
+                                        <img src="{{ asset('images/icons/edit.png') }}" alt="Изменить">
+                                    </button>
+                                </div>
+                                <div class="actions">
+                                    {{-- кнопка удалить --}}
+                                    <form action="{{ route('task.delete', $task->id) }}" method="post"
+                                        class="delete_form">
+                                        @csrf
+                                        @method('delete')
+                                        <input type="hidden" value="4" name="status_id">
+                                        <button class="btn-delete" title="Удалить" name="contact_id">
+                                            <img src="{{ asset('images/icons/close2.png') }}" alt="Удалить">
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="kanban_column" data-status="in_progress">
+                <h3>В процессе</h3>
+                <hr>
+                <div class="kanban_tasks">
+                    @foreach ($tasks->where('task_status', 'В процессе')->filter(fn($task) => !$task->trashed()) as $task)
+                        <div class="kanban_task_card">
+                            <p><b>{{ $task->subject }}</b></p>
+                            <p>{{ $task->description }}</p>
+                            <br>
+                            <p><b>Клиент:</b>
+                                {{ $task->contact ? $task->contact['surname'] . ' ' . $task->contact['name'] : '' }}</p>
+                            <p><b>До</b> {{ $task->formatted_date }} {{ $task->formatted_time }} </p>
+                            <p><b>Приоритет: </b>{{ $task->task_priority }}</p>
+                            <p><b>Исполнитель: </b> {{ $task->user['surname'] }} {{ $task->user['name'] }}</p>
+                            <br>
+                            <div class="kanban_actions">
+                                <div class="actions">
+                                    {{-- кнопка "Выполнено" --}}
+                                    <form action="{{ route('task.delete', $task->id) }}" method="post"
+                                        class="delete_form">
+                                        @csrf
+                                        @method('delete')
+                                        <input type="hidden" value="2" name="status_id">
+                                        <button class="btn-done" id="btn-done" title="Пометить как выполненное"
+                                            data-id="{{ $task->id }}">
+                                            <img src="{{ asset('images/icons/success.png') }}" alt="Выполнено">
+                                        </button>
+                                    </form>
+                                </div>
+                                <div class="actions">
+                                    {{-- кнопка "изменить" --}}
+                                    <button class="edit-btn_task" id="open_update_modal" title="Редактировать"
+                                        type="button" data-id="{{ $task->id }}">
+                                        <img src="{{ asset('images/icons/edit.png') }}" alt="Изменить">
+                                    </button>
+                                </div>
+                                <div class="actions">
+                                    {{-- кнопка удалить --}}
+                                    <form action="{{ route('task.delete', $task->id) }}" method="post"
+                                        class="delete_form">
+                                        @csrf
+                                        @method('delete')
+                                        <input type="hidden" value="4" name="status_id">
+                                        <button class="btn-delete" title="Удалить" name="contact_id">
+                                            <img src="{{ asset('images/icons/close2.png') }}" alt="Удалить">
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+            <div class="kanban_column" data-status="completed">
+                <h3>Выполненные</h3>
+                <hr>
+                <div class="kanban_tasks">
+                    @foreach ($tasks->where('task_status', 'Выполнено')->filter(fn($t) => $t->trashed()) as $task)
+                        <div class="kanban_task_card">
+                            <p><b>{{ $task->subject }}</b></p>
+                            <p>{{ $task->description }}</p>
+                            <br>
+                            <p><b>Клиент:</b>
+                                {{ $task->contact ? $task->contact['surname'] . ' ' . $task->contact['name'] : '' }}</p>
+                            <p><b>До</b> {{ $task->formatted_date }} {{ $task->formatted_time }} </p>
+                            <p><b>Приоритет: </b>{{ $task->task_priority }}</p>
+                            <p><b>Исполнитель: </b> {{ $task->user['surname'] }} {{ $task->user['name'] }}</p>
+                            <br>
+
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
 
         <table class="tasks_table" id="contacts_table">
             <thead>
@@ -48,11 +178,11 @@
                             @endif
                         </a>
                     </th>
-                    <th data-column="contact">
+                    <th data-column="contact_surname">
                         <a class="sort_btn"
-                            href="{{ route('task.main', ['sort' => 'contact', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
+                            href="{{ route('task.main', ['sort' => 'contact_surname', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}">
                             Клиент
-                            @if ($sort === 'contact')
+                            @if ($sort === 'contact_surname')
                                 {{ $direction === 'asc' ? '↑' : '↓' }}
                             @endif
                         </a>
@@ -84,6 +214,15 @@
                             @endif
                         </a>
                     </th>
+                    <th data-column="status">
+                        <a href="{{ route('task.main', ['sort' => 'status', 'direction' => $direction === 'asc' ? 'desc' : 'asc']) }}"
+                            class="sort_btn">
+                            Статус
+                            @if ($sort === 'status')
+                                {{ $direction === 'asc' ? '↑' : '↓' }}
+                            @endif
+                        </a>
+                    </th>
                     <th></th>
                     <th></th>
                     <th></th>
@@ -91,14 +230,15 @@
             </thead>
 
             <tbody>
-                @foreach ($tasks as $task)
+                @foreach ($tasks->filter(fn($task) => !$task->trashed()) as $task)
                     <tr>
                         <td> {{ $task->subject }} </td>
                         <td> {{ $task->description }} </td>
                         <td> {{ $task->contact ? $task->contact['surname'] . ' ' . $task->contact['name'] : '' }} </td>
-                        <td> {{ $task->date }} </td>
-                        <td> {{ $task->time }} </td>
+                        <td> {{ $task->formatted_date }} </td>
+                        <td> {{ $task->formatted_time }} </td>
                         <td>{{ $task->priority['priority'] }}</td>
+                        <td>{{ $task->status['status'] }}</td>
                         <td class="actions">
                             {{-- кнопка "Выполнено" --}}
                             <form action="{{ route('task.delete', $task->id) }}" method="post" class="delete_form">
@@ -112,8 +252,9 @@
                             </form>
                         </td>
                         <td class="actions">
+                            {{-- id="open_update_modal" --}}
                             {{-- кнопка "изменить" --}}
-                            <button class="edit-btn_task" id="open_update_modal" title="Редактировать" type="button"
+                            <button class="edit-btn_task" title="Редактировать" type="button"
                                 data-id="{{ $task->id }}">
                                 <img src="{{ asset('images/icons/edit.png') }}" alt="Изменить">
                             </button>
@@ -210,12 +351,12 @@
                 <hr style="width: 70%; margin:10px 0">
 
                 <input type="hidden" id="taskId" name="id">
-                <input type="hidden" id="updateRouteTemplate" value="{{ route('contact.update', ':id') }}">
+                <input type="hidden" id="updateRouteTemplate" value="{{ route('task.update', ':id') }}">
 
                 <fieldset>
                     <legend>Контакт</legend>
-                    <select name="contact_id" id="task_contact" class="add_select add" required>
-                        <option value="" selected>Без контакта</option>
+                    <select name="contact_id" id="task_contact" class="add_select add">
+                        <option value="0" selected>Без контакта</option>
                         @foreach ($contacts as $contact)
                             <option class="task_contact" value="{{ $contact->id }}">
                                 {{ $contact->surname . ' ' . $contact->name }}
@@ -248,9 +389,19 @@
                 <fieldset>
                     <legend>Приоритет</legend>
                     @foreach ($priorities as $priority)
-                        <input type="radio" name="task_priority_id" value="{{ $priority->id }}"
-                            class="task_priority_id" id="{{ $priority->id }}" class="add_radio add" required>
+                        <input type="radio" name="priority_id" value="{{ $priority->id }}" class="task_priority_id"
+                            id="{{ $priority->id }}" class="add_radio add" required>
                         <label for="{{ $priority->id }}">{{ $priority->priority }}</label>
+                        <br>
+                    @endforeach
+                </fieldset>
+
+                <fieldset>
+                    <legend>Статус задачи</legend>
+                    @foreach ($statuses as $status)
+                        <input type="radio" name="status_id" value="{{ $status->id }}" class="task_status_id"
+                            id="{{ $status->id }}" class="add_radio add" required>
+                        <label for="{{ $status->id }}">{{ $status->status }}</label>
                         <br>
                     @endforeach
                 </fieldset>
@@ -258,4 +409,55 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const table = document.querySelector('.tasks_table');
+            const kanbanBoard = document.getElementById('kanban_board');
+
+            const toggleTableBtn = document.getElementById('toggle-table');
+            const toggleKanbanBtn = document.getElementById('toggle-kanban');
+
+            toggleTableBtn.style.backgroundColor = "white";
+            toggleTableBtn.style.color = "var(--btnhover)";
+            toggleTableBtn.style.border = "1px solid var(--btnhover)";
+
+            if (@json($tasks)) {
+                const tasks = @json($tasks);
+
+
+                toggleTableBtn.addEventListener('click', () => {
+                    table.style.display = 'table';
+                    kanbanBoard.style.display = 'none';
+
+                    toggleTableBtn.style.backgroundColor = "white";
+                    toggleTableBtn.style.color = "var(--btnhover)";
+                    toggleTableBtn.style.border = "1px solid var(--btnhover)";
+
+                    toggleKanbanBtn.style.color = "white";
+                    toggleKanbanBtn.style.backgroundColor = "var(--btnhover)";
+                    toggleKanbanBtn.style.border = "none";
+
+                    toggleTableBtn.classList.add('active');
+                    toggleKanbanBtn.classList.remove('active');
+                });
+
+                toggleKanbanBtn.addEventListener('click', () => {
+                    table.style.display = 'none';
+                    kanbanBoard.style.display = 'flex';
+
+                    toggleKanbanBtn.style.backgroundColor = "white";
+                    toggleKanbanBtn.style.color = "var(--btnhover)";
+                    toggleKanbanBtn.style.border = "1px solid var(--btnhover)";
+
+                    toggleTableBtn.style.color = "white";
+                    toggleTableBtn.style.backgroundColor = "var(--btnhover)";
+                    toggleTableBtn.style.border = "none";
+
+                    toggleKanbanBtn.classList.add('active');
+                    toggleTableBtn.classList.remove('active');
+                });
+            }
+        });
+    </script>
 @endsection

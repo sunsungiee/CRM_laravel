@@ -341,8 +341,16 @@ header button {
     cursor: pointer;
 }
 
+.actions button {
+    padding: 0 2vw;
+    cursor: pointer;
+    border: none;
+    background-color: inherit;
+}
+
 .actions img {
     width: 2vh;
+    cursor: pointer;
 }
 
 .sort_btn {
@@ -350,7 +358,9 @@ header button {
     display: block;
 }
 
-.edit-btn, .btn-delete, .edit-btn_task {
+.edit-btn,
+.btn-delete,
+.edit-btn_task {
     border: none;
     width: 100%;
     height: 100%;
@@ -359,7 +369,9 @@ header button {
     cursor: inherit;
 }
 
-.actions:hover, .edit-btn:hover, .btn-delete:hover {
+.actions:hover,
+.edit-btn:hover,
+.btn-delete:hover {
     background-color: rgb(219, 204, 247);
 }
 
@@ -387,7 +399,8 @@ header button {
     font-size: 16px;
 }
 
-#searchInput:focus-visible, #month:focus-visible {
+#searchInput:focus-visible,
+#month:focus-visible {
     outline: none;
 }
 
@@ -529,7 +542,8 @@ input[type="number"] {
     min-height: 5vh;
 }
 
-.table_canvas td, .table_canvas th {
+.table_canvas td,
+.table_canvas th {
     border: 1px solid gray;
     height: 5vh;
 }
@@ -565,4 +579,68 @@ input[type="number"] {
 .main_info {
     display: grid;
     grid-template-columns: 1fr 1fr;
+}
+
+
+.kanban_board {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+}
+
+.kanban_column {
+    flex: 1;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    padding: 10px;
+    min-width: 250px;
+}
+
+.kanban_column h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.kanban_tasks {
+    min-height: 100px;
+}
+
+.kanban_task_card {
+    background: white;
+    border: 1px solid #414141;
+    border-radius: 6px;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.kanban_actions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.kanban_actions .actions {
+    width: 100%;
+}
+
+.kanban_actions button {
+    padding: 10px 0;
+    border-radius: 10px;
+}
+
+.view-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 0 0 3vh 0;
+}
+
+.view-toggle button {
+    border: none;
+    background-color: var(--btnhover);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
 }
