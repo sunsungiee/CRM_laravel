@@ -17,16 +17,22 @@ class WelcomeController extends Controller
     {
         $user = Auth::user();
 
+        $userId = Auth::id();
+
         $actualDeals = Deal::where('phase_id', "<", 4)
+            ->where('user_id', $userId)
             ->join("phases", "deals.phase_id", "=", "phases.id")
             ->join('contacts', 'deals.contact_id', '=', 'contacts.id')
             ->orderBy("end_date", "asc")->get();
 
         $nextWeek = now()->addDays(7); // Через 7 дней
 
-        $actualTasks = Task::orderBy("date", "asc")->get();
+        $actualTasks = Task::orderBy("date", "asc")
+            ->where('user_id', $userId)
+            ->get();
         try {
             $soonTasks = Task::whereNotNull('date')
+                ->where('user_id', $userId)
                 ->where("priority_id", "!=", "3")
                 ->whereDate('date', '<=', $nextWeek)
                 ->leftJoin('contacts', 'tasks.contact_id', '=', 'contacts.id')
@@ -51,12 +57,10 @@ class WelcomeController extends Controller
     public function getData(Request $request)
     {
         $month = $request->query('month', now()->month);
-
-        $completed = 0;
-        $inProgress = 0;
-        $canceled = 0;
+        $userId = Auth::id();
 
         $deals = Deal::withTrashed()
+            ->where('user_id', $userId)
             ->whereHas('phase', function ($query) {
                 $query->whereIn('id', [1, 2, 3, 4, 5]);
             })
@@ -69,7 +73,19 @@ class WelcomeController extends Controller
                         $q->whereNull('deleted_at')->whereMonth('updated_at', $month);
                     });
             })
+            ->with(['phase'])
             ->get();
+
+        // if ($deals->isEmpty()) {
+        //     return response()->json([
+        //         'no_data' => true,
+        //         'message' => 'Нет данных для отображения'
+        //     ]);
+        // }
+
+        $completed = 0;
+        $inProgress = 0;
+        $canceled = 0;
 
         foreach ($deals as $deal) {
             $date = $deal->deleted_at ?? $deal->updated_at;
@@ -92,6 +108,7 @@ class WelcomeController extends Controller
         $percentCompleted = $totalAll > 0 ? round(($completed / $totalAll) * 100, 1) : 0;
 
         return response()->json([
+            // 'no_data' => false,
             'chart' => [
                 'labels' => ['Завершено', 'Отменено', 'В процессе'],
                 'data' => [$completed, $canceled, $inProgress],
@@ -109,25 +126,32 @@ class WelcomeController extends Controller
 
     public function getTasksData(Request $request)
     {
+        $userId = Auth::id();
+
         try {
             $month = $request->query('month', now()->month);
 
-            // Считаем количество задач по статусам
-            $inProgress = Task::where('status_id', 1)->whereMonth('created_at', $month)->count();
+            $inProgress = Task::where('status_id', 1)
+                ->orWhere('status_id', 5)
+                ->where('user_id', $userId)
+                ->whereMonth('created_at', $month)->count();
 
             $completed = Task::where('status_id', 2)
+                ->where('user_id', $userId)
                 ->whereNotNull('deleted_at')
                 ->whereMonth('deleted_at', $month)
                 ->withTrashed()
                 ->count();
 
             $overdue = Task::where('status_id', 3)
+                ->where('user_id', $userId)
                 ->whereNotNull('deleted_at')
                 ->whereMonth('deleted_at', $month)
                 ->withTrashed()
                 ->count();
 
             $canceled = Task::where('status_id', 4)
+                ->where('user_id', $userId)
                 ->whereNotNull('deleted_at')
                 ->whereMonth('deleted_at', $month)
                 ->withTrashed()

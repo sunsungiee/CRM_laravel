@@ -13,15 +13,7 @@
         </div>
 
         <hr>
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
+
         <form method="GET" action="{{ route('task.main') }}" class="search_form">
             <div class="search_container">
                 <input type="text" tabindex="1" name="search" placeholder="Поиск..." id="searchInput"

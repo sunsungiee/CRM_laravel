@@ -14,7 +14,7 @@ class DealController extends Controller
     public function index()
     {
         $search = request('search');
-        $sort = request()->input('sort', 'id');
+        $sort = request()->input('sort', 'subject');
         $direction = request()->input('direction', 'asc');
 
         $userId = Auth::id();

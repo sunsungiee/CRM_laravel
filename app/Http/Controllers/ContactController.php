@@ -12,7 +12,7 @@ class ContactController extends Controller
     {
         $search = request('search');
 
-        $sort = request()->input('sort', 'id'); // По умолчанию сортировка по ID
+        $sort = request()->input('sort', 'surname'); // По умолчанию сортировка по ID
         $direction = request()->input('direction', 'asc'); // Направление по умолчанию
 
         $user = Auth::user();
