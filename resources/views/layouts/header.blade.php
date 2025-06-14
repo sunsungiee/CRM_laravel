@@ -7,7 +7,10 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CRM</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/burger.css', 'resources/js/burger.js'])
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/burger.css', 'resources/js/burger.js']) --}}
+
+    {!! vite_build('resources/css/app.css') !!}
+    {!! vite_build('resources/css/burger.css') !!}
 
     <link rel="icon" href="{{ asset('favicon2.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -170,6 +173,9 @@
                     .catch(err => console.error("Ошибка:", err));
             }, 60 * 1000); // Каждые 60 секунд
         </script>
+
+        {!! vite_build('resources/js/app.js') !!}
+        {!! vite_build('resources/js/burger.js') !!}
 </body>
 
 </html>

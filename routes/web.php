@@ -1,4 +1,5 @@
 <?php
+require app_path('Helpers/Vite.php');
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ContactController;
