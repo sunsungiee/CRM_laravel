@@ -1,16 +1,38 @@
-FROM php:8.0.2-fpm
+# FROM php:8.0.2-fpm
 
-RUN docker-php-ext-install pdo pdo_mysql opcache exif
+FROM php:8.0-apache
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Устанавливаем Node.js, npm и зависимости PHP
+RUN apt-get update && \
+    apt-get install -y nodejs npm && \
+    npm install -g vite && \
+    docker-php-ext-install pdo pdo_mysql
 
+# Копируем проект
+COPY . /var/www/html
+
+# Устанавливаем зависимости
 WORKDIR /var/www/html
+RUN composer install --no-dev --optimize-autoloader
+RUN npm install && npm run build
 
-FROM php:8.1-fpm
+# Настраиваем Apache
+RUN chmod -R 777 storage bootstrap/cache
+RUN php artisan optimize:clear
 
-# Устанавливаем рабочую директорию
-WORKDIR /var/www
+# Запускаем сервер
+CMD ["sh", "-c", "php artisan serve --host=0.0.0.0 --port=10000 & npm run dev"]
 
+# RUN docker-php-ext-install pdo pdo_mysql opcache exif
+
+# COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# WORKDIR /var/www/html
+
+# FROM php:8.1-fpm
+
+# # Устанавливаем рабочую директорию
+# WORKDIR /var/www
 # # Копируем composer.lock и composer.json
 # COPY composer.lock composer.json /var/www/
 # # Устанавливаем зависимости
@@ -44,3 +66,4 @@ WORKDIR /var/www
 # USER www
 # # В контейнере открываем 9000 порт и запускаем сервер php-fpm
 # # EXPOSE 9000CMD ["php-fpm"]
+
