@@ -66,30 +66,31 @@ class TaskController extends Controller
 
     public function store()
     {
+        Log::debug("Логи добавит yfxfk");
+
         $data = request()->validate([
-            'contact_id' => 'nullable|integer|exists:contacts,id',
+            'contact_id' => 'nullable|integer',
             'subject' => 'required|string|max:255',
             'description' => 'required|string',
             'date' => 'nullable|date',
             'time' => 'nullable|date_format:H:i',
             'priority_id' => 'required|integer|exists:priorities,id',
-            'status_id' => 'required|integer|exists:statuses,id'
+            // 'status_id' => '1'
         ]);
+
+        Log::debug("Логи добавит ", $data);
 
         if (isset($data['contact_id']) && $data['contact_id'] == 0) {
             $data['contact_id'] = null;
         }
 
-        $data['user_id'] = auth()->id();
-        // dd($data);
+        Log::debug("Логи добавит  конец", $data);
 
-        try {
-            Task::create($data);
-            return redirect()->route("task.main")->with('success', 'Задача успешно создана!');
-        } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Ошибка при создании задачи: ' . $e->getMessage());
-            // dd($e->getMessage());
-        }
+        $data['user_id'] = auth()->id();
+
+        Task::create($data);
+        return redirect()->route("task.main");
+        // dd($e->getMessage());
     }
 
     public function edit(Task $task)
@@ -109,6 +110,9 @@ class TaskController extends Controller
             'priority_id' => 'required|integer|exists:priorities,id',
             'status_id' => 'required|integer|exists:statuses,id'
         ]);
+
+        Log::debug("Логи апдейт " . $data);
+
 
         if (!isset($data['contact_id']) || $data['contact_id'] === '' || $data['contact_id'] == 0) {
             $data['contact_id'] = null;

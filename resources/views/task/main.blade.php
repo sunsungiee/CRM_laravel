@@ -244,7 +244,6 @@
                             </form>
                         </td>
                         <td class="actions">
-                            {{-- id="open_update_modal" --}}
                             {{-- кнопка "изменить" --}}
                             <button class="edit-btn_task" title="Редактировать" type="button"
                                 data-id="{{ $task->id }}">
@@ -285,7 +284,7 @@
                 <fieldset>
                     <legend>Контакт</legend>
                     <select name="contact_id" id="contact" class="add_select add">
-                        <option value="" selected>Без контакта</option>
+                        <option value="0" selected>Без контакта</option>
                         @foreach ($contacts as $contact)
                             <option value="{{ $contact->id }}">
                                 {{ $contact->surname . ' ' . $contact->name }}
@@ -381,9 +380,8 @@
                 <fieldset>
                     <legend>Приоритет</legend>
                     @foreach ($priorities as $priority)
-                        <input type="radio" name="priority_id" value="{{ $priority->id }}" class="task_priority_id"
-                            id="{{ $priority->id }}" class="add_radio add" required>
-                        <label for="{{ $priority->id }}">{{ $priority->priority }}</label>
+                        <input type="radio" name="priority_id" value="{{ $priority->id }}" class="task_priority_id" id="priority{{ $priority->id }}" class="add_radio add" required>
+                        <label for="priority{{ $priority->id }}">{{ $priority->priority }}</label>
                         <br>
                     @endforeach
                 </fieldset>
@@ -391,9 +389,10 @@
                 <fieldset>
                     <legend>Статус задачи</legend>
                     @foreach ($statuses as $status)
-                        <input type="radio" name="status_id" value="{{ $status->id }}" class="task_status_id"
-                            id="{{ $status->id }}" class="add_radio add" required>
-                        <label for="{{ $status->id }}">{{ $status->status }}</label>
+                        <input type="radio" name="status_id" id="status{{ $status->id }}"
+                            value="{{ $status->id }}" class="task_status_id" id="{{ $status->id }}"
+                            class="add_radio add" required>
+                        <label for="status{{ $status->id }}">{{ $status->status }}</label>
                         <br>
                     @endforeach
                 </fieldset>

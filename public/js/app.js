@@ -1,4 +1,3 @@
-$('#phone').mask('+7(999) 999-99-99');
 
 $("#task_button").click(function () {
     $("#tasks_menu").slideToggle(300); // 300ms - длительность анимации
@@ -39,7 +38,6 @@ if (closeModal) {
 
 
 //открытие модального окна формы изменения
-
 var closeUpdateModal = document.getElementById("close_update_modal");
 var updateModal = document.getElementById("update_modal");
 

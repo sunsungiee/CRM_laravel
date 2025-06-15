@@ -25,6 +25,9 @@
     <script src="{{ asset('js/jquery.maskedinput.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="{{ asset('js/burger.js') }}"></script>
+    <script>
+        $('#phone').mask('+7(999) 999-99-99');
+    </script>
 </body>
 
 </html>
