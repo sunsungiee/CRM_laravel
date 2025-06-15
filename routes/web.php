@@ -8,6 +8,7 @@ use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\WelcomeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,6 +68,12 @@ Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name
 Route::patch('/contacts/{contact}', [ContactController::class, 'update'])->name("contact.update")->middleware('auth');
 Route::delete("/contacts/{contact}", [ContactController::class, "destroy"])->name("contact.delete")->middleware('auth');
 
+// личный профиль юзера
+Route::get('/profile', [ProfileController::class, 'index'])->name("profile.main")->middleware('auth');
+Route::patch('/profile', [ProfileController::class, 'update'])->name("profile.update")->middleware('auth');
 
 // ФУНКЦИИ АДМИНА
 Route::get('/admin', [AdminController::class, 'index'])->name("admin.main")->middleware('admin');
+Route::post('/admin', [AdminController::class, 'store'])->name("admin.store")->middleware('admin');
+Route::patch('/admin/{task}', [AdminController::class, 'update'])->name("admin.update")->middleware('admin');
+Route::delete('/admin/{task}', [AdminController::class, 'destroy'])->name("admin.delete")->middleware('admin');

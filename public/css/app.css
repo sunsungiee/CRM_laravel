@@ -663,3 +663,35 @@ input[type="number"] {
     gap: 2vh;
     justify-items: center;
 }
+
+.self_profile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 50vw;
+}
+
+.self_profile input {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: none;
+    width: 100%;
+    font-size: 15px;
+}
+
+.self_profile button {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    color: white;
+    font-family: "Montserrat", serif;
+    background-color: var(--buttons);
+    font-size: 16px;
+
+}
+
+/* .self_profile fieldset {
+    background-color: white;
+} */

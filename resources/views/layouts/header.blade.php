@@ -51,11 +51,14 @@
                             </div>
                         </li>
                         <li><a href="{{ route('contact.main') }}">Контакты</a></li>
+                        @if (auth()->user()->is_admin)
+                            <a href="{{ route('admin.main') }}" class="admin-link">Админ-панель</a>
+                        @endif
                     </ul>
                 </div>
                 <ul>
                     <li>
-                        <a href="#">
+                        <a href="{{ route('profile.main') }}">
                             {{ $user->name }}
                         </a>
                         <a style="display: block;">
@@ -177,6 +180,22 @@
                     .then(data => console.log("Команда выполнена:", data.output))
                     .catch(err => console.error("Ошибка:", err));
             }, 60 * 1000); // Каждые 60 секунд
+        </script>
+        <script>
+            $('#profile_btn').hide();
+
+            $('#enableInputs').click(function() {
+                $('.form-input').prop('disabled', false);
+                $(".profile_fieldset").css("background-color", "white");
+                $('#profile_btn').show();
+            });
+
+            $('.toggle-password').click(function() {
+                const input = $('#passwordInput');
+                const type = input.attr('type') === 'password' ? 'text' : 'password';
+                input.attr('type', type);
+                $(this).text(type === 'password' ? '👁' : '👁️‍🗨️');
+            });
         </script>
 </body>
 

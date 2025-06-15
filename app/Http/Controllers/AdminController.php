@@ -70,4 +70,51 @@ class AdminController extends Controller
             'user' => $current_user
         ]);
     }
+
+    public function store()
+    {
+        $data = request()->validate([
+            'contact_id' => 'nullable|integer',
+            'subject' => 'required|string|max:255',
+            'description' => 'required|string',
+            'date' => 'nullable|date',
+            'time' => 'nullable|date_format:H:i',
+            'priority_id' => 'required|integer|exists:priorities,id',
+            'user_id' => 'required|integer',
+        ]);
+
+        if (isset($data['contact_id']) && $data['contact_id'] == 0) {
+            $data['contact_id'] = null;
+        }
+
+        Task::create($data);
+        return redirect()->route("admin.main");
+    }
+
+    public function update(Task $task)
+    {
+        $data = request()->validate([
+            'contact_id' => 'nullable|integer',
+            'user_id' => 'required|integer',
+            'subject' => 'required|string|max:255',
+            'description' => 'required|string',
+            'date' => 'nullable|date',
+            'time' => 'nullable|date_format:H:i',
+            'priority_id' => 'required|integer|exists:priorities,id',
+            // 'status_id' => 'required|integer|exists:statuses,id',
+        ]);
+
+        if (!isset($data['contact_id']) || $data['contact_id'] === '' || $data['contact_id'] == 0) {
+            $data['contact_id'] = null;
+        }
+
+        $task->update($data);
+        return redirect()->route("admin.main");
+    }
+
+    public function destroy(Task $task)
+    {
+        $task->delete();
+        return redirect()->route("admin.main");
+    }
 }

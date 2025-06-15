@@ -68,9 +68,8 @@ class ContactController extends Controller
     }
 
     public function destroy(Contact $contact)
-    {
-        // $contact->delete();
-        $contact->restore();
+    {// $contact->restore();
+        $contact->delete();
         return redirect()->route("contact.main");
     }
 }

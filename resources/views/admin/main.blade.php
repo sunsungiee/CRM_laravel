@@ -124,7 +124,7 @@
                             @endif
                         </a>
                     </th>
-                    <th></th>
+                    {{-- <th></th> --}}
                     <th></th>
                     <th></th>
                 </tr>
@@ -153,7 +153,7 @@
                         </td>
                         <td class="actions">
                             {{-- кнопка удалить --}}
-                            <form action="{{ route('task.delete', $task->id) }}" method="post" class="delete_form">
+                            <form action="{{ route('admin.delete', $task->id) }}" method="post" class="delete_form">
                                 @csrf
                                 @method('delete')
                                 <input type="hidden" value="4" name="status_id">
@@ -173,7 +173,7 @@
     {{-- ДОБАВЛЕНИЕ НОВОЙ ЗАДАЧИ --}}
     <div class="modal" id="modal">
         <div class="modal_content">
-            <form action="{{ route('task.store') }}" method="post" class="add_form">
+            <form action="{{ route('admin.store') }}" method="post" class="add_form">
                 @csrf
                 <div class="modal_header">
                     <p id="modal_header_title">Новая задача</p>
@@ -241,7 +241,7 @@
     {{-- ОБНОВЛЕНИЕ ЗАДАЧИ --}}
     <div class="modal" id="update_modal">
         <div class="modal_content">
-            <form action="{{ route('task.update', ':id') }}" method="post" id="update_form" class="add_form">
+            <form action="{{ route('admin.update', ':id') }}" method="post" id="update_form" class="add_form">
                 @csrf
                 @method('patch')
 
@@ -305,17 +305,6 @@
                         <input type="radio" name="priority_id" value="{{ $priority->id }}" class="task_priority_id"
                             id="priority{{ $priority->id }}" class="add_radio add" required>
                         <label for="priority{{ $priority->id }}">{{ $priority->priority }}</label>
-                        <br>
-                    @endforeach
-                </fieldset>
-
-                <fieldset>
-                    <legend>Статус задачи</legend>
-                    @foreach ($statuses as $status)
-                        <input type="radio" name="status_id" id="status{{ $status->id }}"
-                            value="{{ $status->id }}" class="task_status_id" id="{{ $status->id }}"
-                            class="add_radio add" required>
-                        <label for="status{{ $status->id }}">{{ $status->status }}</label>
                         <br>
                     @endforeach
                 </fieldset>
