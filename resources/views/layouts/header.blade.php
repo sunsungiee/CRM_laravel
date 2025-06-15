@@ -131,7 +131,7 @@
                         </li>
                         <hr>
 
-                        <li><a href="{{route("contact.main")}}">Контакты</a></li>
+                        <li><a href="{{ route('contact.main') }}">Контакты</a></li>
                         <hr>
                     </ul>
                 </div>

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use Faker\Factory as Faker;
 
 class TasksTableSeeder extends Seeder
@@ -18,9 +19,11 @@ class TasksTableSeeder extends Seeder
     {
         $faker = Faker::create("ru_RU");
 
+        $userCount = User::count();
+
         foreach (range(1, 10) as $index) {
 
-            $contact = $faker->optional()->numberBetween(1, 20);
+            $contact = $faker->optional()->numberBetween(1, $userCount);
             $user = $faker->numberBetween(1, 1);
             $priority = $faker->numberBetween(1, 3);
             $specificTasks = [
