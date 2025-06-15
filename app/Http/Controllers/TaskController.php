@@ -107,6 +107,7 @@ class TaskController extends Controller
             'date' => 'nullable|date',
             'time' => 'nullable|date_format:H:i',
             'priority_id' => 'required|integer|exists:priorities,id',
+            'status_id' => 'required|integer|exists:statuses,id',
         ]);
 
         // Log::debug("Логи апдейт " . $data);
