@@ -10,8 +10,6 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/burger.css') }}">
 
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/burger.css', 'resources/js/burger.js']) --}}
-
     <link rel="icon" href="{{ asset('favicon.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use Faker\Factory as Faker;
 
 class DealsTableSeeder extends Seeder
@@ -18,11 +19,12 @@ class DealsTableSeeder extends Seeder
     {
         $faker = Faker::create("ru_RU");
 
+        $userCount = User::count();
 
         foreach (range(1, 10) as $index) {
 
             $contact = $faker->numberBetween(1, 15);
-            $user = $faker->numberBetween(1, 1);
+            $user = $faker->numberBetween(1, $userCount);
             $phase = $faker->numberBetween(1, 3);
             $dealNames = [
                 'Партнерство с крупным клиентом',
