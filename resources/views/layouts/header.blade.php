@@ -7,7 +7,12 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>CRM</title>
 
-    @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/burger.css', 'resources/js/burger.js'])
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/burger.css') }}">
+
+
+
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/burger.css', 'resources/js/burger.js']) --}}
 
     {{-- {!! vite_build('resources/css/app.css') !!}
     {!! vite_build('resources/css/burger.css') !!} --}}
@@ -164,6 +169,10 @@
         </div>
 
         @yield('content')
+        <script src="{{ asset('js/jquery-3.7.1.min.js') }}"></script>
+        <script src="{{ asset('js/jquery.maskedinput.min.js') }}"></script>
+        <script src="{{ asset('js/app.js') }}"></script>
+        <script src="{{ asset('js/burger.js') }}"></script>
         <script>
             // Запуск команды для истекших задач
             setInterval(() => {
@@ -173,9 +182,6 @@
                     .catch(err => console.error("Ошибка:", err));
             }, 60 * 1000); // Каждые 60 секунд
         </script>
-
-        {!! vite_build('resources/js/app.js') !!}
-        {!! vite_build('resources/js/burger.js') !!}
 </body>
 
 </html>

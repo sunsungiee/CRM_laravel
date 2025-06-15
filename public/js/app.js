@@ -1,7 +1,3 @@
-import './bootstrap';
-import './jquery-3.7.1.min';
-import './jquery.maskedinput.min';
-
 $('#phone').mask('+7(999) 999-99-99');
 
 $("#task_button").click(function () {
