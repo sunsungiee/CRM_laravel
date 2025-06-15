@@ -64,3 +64,7 @@ Route::post('/contacts', [ContactController::class, 'store'])->name("contact.sto
 Route::get('/contacts/{contact}/edit', [ContactController::class, 'edit'])->name("contact.edit")->middleware('auth');
 Route::patch('/contacts/{contact}', [ContactController::class, 'update'])->name("contact.update")->middleware('auth');
 Route::delete("/contacts/{contact}", [ContactController::class, "destroy"])->name("contact.delete")->middleware('auth');
+
+
+// ФУНКЦИИ АДМИНА
+// Route::get('/contacts', [AdminController::class, 'index'])->name("contact.main")->middleware('admin');
