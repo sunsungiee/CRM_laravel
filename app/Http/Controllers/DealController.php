@@ -75,8 +75,8 @@ class DealController extends Controller
 
     public function update(Request $request, Deal $deal)
     {
-        Log::info('Полученные данные:', $request->all());
-        Log::info($deal);
+        // Log::info('Полученные данные:', $request->all());
+        // Log::info($deal);
 
         $data = request()->validate([
             'contact_id' => 'required|integer|exists:contacts,id',
@@ -89,15 +89,10 @@ class DealController extends Controller
 
         $data['user_id'] = auth()->id();
 
-        try {
-            Log::info('Обновляем сделку с данными:', $data);
-            $deal->update($data);
-            Log::info('Сделка после обновления:', $deal->fresh()->toArray());
-            return redirect()->route("deal.main");
-        } catch (\Exception $e) {
-            Log::error('Ошибка при обновлении сделки: ' . $e->getMessage());
-            return dd($e->getMessage());
-        }
+        // Log::info('Обновляем сделку с данными:', $data);
+        $deal->update($data);
+        // Log::info('Сделка после обновления:', $deal->fresh()->toArray());
+        return redirect()->route("deal.main");
     }
 
 

@@ -380,7 +380,8 @@
                 <fieldset>
                     <legend>Приоритет</legend>
                     @foreach ($priorities as $priority)
-                        <input type="radio" name="priority_id" value="{{ $priority->id }}" class="task_priority_id" id="priority{{ $priority->id }}" class="add_radio add" required>
+                        <input type="radio" name="priority_id" value="{{ $priority->id }}" class="task_priority_id"
+                            id="priority{{ $priority->id }}" class="add_radio add" required>
                         <label for="priority{{ $priority->id }}">{{ $priority->priority }}</label>
                         <br>
                     @endforeach
