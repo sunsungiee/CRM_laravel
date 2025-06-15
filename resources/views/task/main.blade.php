@@ -13,7 +13,15 @@
         </div>
 
         <hr>
-
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form method="GET" action="{{ route('task.main') }}" class="search_form">
             <div class="search_container">
                 <input type="text" tabindex="1" name="search" placeholder="Поиск..." id="searchInput"
@@ -218,6 +226,7 @@
                     <th></th>
                     <th></th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
 
@@ -231,6 +240,19 @@
                         <td> {{ $task->formatted_time }} </td>
                         <td>{{ $task->priority['priority'] }}</td>
                         <td>{{ $task->status['status'] }}</td>
+                        <td class="actions">
+                            {{-- кнопка "В процессе" --}}
+                            <form action="{{ route('task.change_status', $task->id) }}" method="post"
+                                class="delete_form">
+                                @csrf
+                                @method('patch')
+                                <input type="hidden" value="1" name="status_id">
+                                <button class="btn-done" id="btn-done" title="В процессе"
+                                    data-id="{{ $task->id }}">
+                                    <img src="{{ asset('images/icons/proccess4.png') }}" alt="В процессе">
+                                </button>
+                            </form>
+                        </td>
                         <td class="actions">
                             {{-- кнопка "Выполнено" --}}
                             <form action="{{ route('task.delete', $task->id) }}" method="post" class="delete_form">
@@ -387,7 +409,7 @@
                     @endforeach
                 </fieldset>
 
-                <fieldset>
+                {{-- <fieldset>
                     <legend>Статус задачи</legend>
                     @foreach ($statuses as $status)
                         <input type="radio" name="status_id" id="status{{ $status->id }}"
@@ -396,7 +418,7 @@
                         <label for="status{{ $status->id }}">{{ $status->status }}</label>
                         <br>
                     @endforeach
-                </fieldset>
+                </fieldset> --}}
                 <button class="add_btn" type="submit">Подтвердить</button>
             </form>
         </div>

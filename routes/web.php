@@ -49,6 +49,7 @@ Route::delete("/tasks/{task}", [TaskController::class, "destroy"])->name("task.d
 //запуск автоудаления просроченных задач
 Route::get('/run_task', [TaskController::class, 'runScheduler'])->name('run_task');
 Route::get("/tasks/archive", [TaskController::class, "showArchive"])->name("task.archive")->middleware("auth");
+Route::patch("/tasks/{task}/change", [TaskController::class, "change_status"])->name("task.change_status")->middleware("auth");
 
 // СДЕЛКИ
 Route::get('/deals', [DealController::class, "index"])->name("deal.main")->middleware('auth');

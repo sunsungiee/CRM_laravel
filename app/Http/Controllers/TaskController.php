@@ -51,7 +51,7 @@ class TaskController extends Controller
 
         $priorities = Priority::all();
         $contacts = Contact::all();
-        $statuses = Status::all();
+        // $statuses = Status::find([1,]);
 
         return view('task.main', [
             'tasks' => $tasks,
@@ -60,7 +60,7 @@ class TaskController extends Controller
             'contacts' => $contacts,
             'priorities' => $priorities,
             'user' => $user,
-            'statuses' => $statuses,
+            // 'statuses' => $statuses,
         ]);
     }
 
@@ -107,7 +107,7 @@ class TaskController extends Controller
             'date' => 'nullable|date',
             'time' => 'nullable|date_format:H:i',
             'priority_id' => 'required|integer|exists:priorities,id',
-            'status_id' => 'required|integer|exists:statuses,id',
+            // 'status_id' => 'required|integer|exists:statuses,id',
         ]);
 
         // Log::debug("Логи апдейт " . $data);
@@ -175,5 +175,15 @@ class TaskController extends Controller
             'status' => 'success',
             'output' => Artisan::output(),
         ]);
+    }
+
+    public function change_status(Task $task)
+    {
+        $data = request()->validate([
+            'status_id' => 'required|integer|exists:statuses,id',
+        ]);
+
+        $task->update($data);
+        return redirect()->route("task.main");
     }
 }

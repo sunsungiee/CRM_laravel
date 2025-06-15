@@ -28,22 +28,24 @@ class WelcomeController extends Controller
         $nextWeek = now()->addDays(7); // Через 7 дней
 
         $actualTasks = Task::orderBy("date", "asc")
+            ->where("status_id", 1)
+            ->orWhere("status_id", 5)
             ->where('user_id', $userId)
             ->get();
-        try {
-            $soonTasks = Task::whereNotNull('date')
-                ->where('user_id', $userId)
-                ->where("priority_id", "!=", "3")
-                ->whereDate('date', '<=', $nextWeek)
-                ->leftJoin('contacts', 'tasks.contact_id', '=', 'contacts.id')
-                ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.id')
-                ->orderBy("tasks.date", "asc")
-                ->get([
-                    'tasks.*'
-                ]);
-        } catch (Exception $e) {
-            dd($e->getMessage());
-        }
+
+        $soonTasks = Task::whereNotNull('date')
+            ->where("status_id", 1)
+            ->orWhere("status_id", 5)
+            ->where('user_id', $userId)
+            ->where("priority_id", "!=", "3")
+            ->whereDate('date', '<=', $nextWeek)
+            ->leftJoin('contacts', 'tasks.contact_id', '=', 'contacts.id')
+            ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.id')
+            ->orderBy("tasks.date", "asc")
+            ->get([
+                'tasks.*'
+            ]);
+
 
 
         return view("welcome", [
