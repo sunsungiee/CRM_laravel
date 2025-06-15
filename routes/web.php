@@ -7,6 +7,7 @@ use App\Http\Controllers\DealController;
 use App\Http\Controllers\TaskController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -67,4 +68,4 @@ Route::delete("/contacts/{contact}", [ContactController::class, "destroy"])->nam
 
 
 // ФУНКЦИИ АДМИНА
-// Route::get('/contacts', [AdminController::class, 'index'])->name("contact.main")->middleware('admin');
+Route::get('/admin', [AdminController::class, 'index'])->name("admin.main")->middleware('admin');

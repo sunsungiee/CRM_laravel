@@ -652,3 +652,14 @@ input[type="number"] {
     color: rgb(117, 0, 0);
     background-color: rgba(255, 255, 255, 0.274);
 }
+
+.admin_h {
+    text-align: center;
+}
+
+.users {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 2vh;
+    justify-items: center;
+}
