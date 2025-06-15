@@ -10,13 +10,6 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="{{ asset('css/burger.css') }}">
 
-
-
-    {{-- @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/css/burger.css', 'resources/js/burger.js']) --}}
-
-    {{-- {!! vite_build('resources/css/app.css') !!}
-    {!! vite_build('resources/css/burger.css') !!} --}}
-
     <link rel="icon" href="{{ asset('favicon2.png') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -138,7 +131,7 @@
                         </li>
                         <hr>
 
-                        <li><a href="contacts.php">Контакты</a></li>
+                        <li><a href="{{route("contact.main")}}">Контакты</a></li>
                         <hr>
                     </ul>
                 </div>
