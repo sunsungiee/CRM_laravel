@@ -75,9 +75,6 @@ class DealController extends Controller
 
     public function update(Request $request, Deal $deal)
     {
-        // Log::info('Полученные данные:', $request->all());
-        // Log::info($deal);
-
         $data = request()->validate([
             'contact_id' => 'required|integer|exists:contacts,id',
             'subject' => 'required|string|max:255',
@@ -89,9 +86,8 @@ class DealController extends Controller
 
         $data['user_id'] = auth()->id();
 
-        // Log::info('Обновляем сделку с данными:', $data);
+
         $deal->update($data);
-        // Log::info('Сделка после обновления:', $deal->fresh()->toArray());
         return redirect()->route("deal.main");
     }
 
@@ -112,7 +108,7 @@ class DealController extends Controller
     public function showArchive()
     {
         $search = request('search');
-        $sort = request()->input('sort', 'id');
+        $sort = request()->input('sort', 'subject');
         $direction = request()->input('direction', 'asc');
 
         $userId = Auth::id();

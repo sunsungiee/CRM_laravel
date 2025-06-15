@@ -40,14 +40,25 @@ class AuthController extends Controller
     // Обработка регистрации
     public function register(Request $request)
     {
-        $data = $request->validate([
-            'surname' => 'required|string|max:255',
-            'name' => 'required|string|max:255',
-            'post' => 'required|string|max:255',
-            'phone' => 'required|string|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6',
+        $request->merge([
+            'phone' => preg_replace('/[^0-9]/', '', $request->phone)
         ]);
+
+        $data = $request->validate(
+            [
+                'surname' => 'required|string|max:255',
+                'name' => 'required|string|max:255',
+                'post' => 'required|string|max:255',
+                'phone' => 'required|string|unique:users,phone',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6',
+            ],
+            [
+                'phone.unique' => 'Этот телефон уже зарегистрирован',
+                'email.unique' => 'Этот email уже зарегистрирован',
+                'phone.min' => 'Телефон должен содержать минимум 11 цифр',
+            ]
+        );
 
         $data['phone'] = preg_replace('/\D/', '', $data['phone']);
         $data['password'] = Hash::make($data['password']);

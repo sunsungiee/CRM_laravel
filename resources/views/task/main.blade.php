@@ -403,6 +403,11 @@
     </div>
 
     <script>
+        @if ($errors->any)
+        var msg = alert("Похоже, произошла ошибка." + {{$error}})
+        @endif
+    </script>
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
             const table = document.querySelector('.tasks_table');
             const kanbanBoard = document.getElementById('kanban_board');
