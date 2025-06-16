@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Contact;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -21,10 +22,12 @@ class TasksTableSeeder extends Seeder
 
         $userCount = User::count();
 
+        $contactCount = Contact::count();
+
         foreach (range(1, 10) as $index) {
 
-            $contact = $faker->optional()->numberBetween(1, $userCount);
-            $user = $faker->numberBetween(1, 1);
+            $contact = $faker->optional()->numberBetween(1, $contactCount);
+            $user = $faker->numberBetween(1, $userCount);
             $priority = $faker->numberBetween(1, 3);
             $specificTasks = [
                 'Составить отчет для клиента',
