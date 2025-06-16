@@ -9,8 +9,6 @@ use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
-
-
 class WelcomeController extends Controller
 {
     public function index()
@@ -19,34 +17,39 @@ class WelcomeController extends Controller
 
         $userId = Auth::id();
 
-        $actualDeals = Deal::where('phase_id', "<", 4)
-            ->where('user_id', $userId)
+        $actualDeals = Deal::where('user_id', $userId)
+            ->where(function ($query) {
+                $query->where('phase_id', 3)
+                    ->orWhere('phase_id', 2)
+                    ->orWhere('phase_id', 1);
+            })
             ->join("phases", "deals.phase_id", "=", "phases.id")
             ->join('contacts', 'deals.contact_id', '=', 'contacts.id')
-            ->orderBy("end_date", "asc")->get();
+            ->orderBy("end_date", "asc")
+            ->get();
 
         $nextWeek = now()->addDays(7); // Через 7 дней
 
-        $actualTasks = Task::orderBy("date", "asc")
-        ->where('user_id', $userId)
-            ->where("status_id", 1)
-            ->orWhere("status_id", 5)
+        $actualTasks = Task::where('user_id', $userId)
+            ->where(function ($query) {
+                $query->where("status_id", 1)
+                    ->orWhere("status_id", 5);
+            })
+            ->orderBy("date", "asc")
             ->get();
 
-        $soonTasks = Task::whereNotNull('date')
-            ->where("status_id", 1)
-            ->orWhere("status_id", 5)
-            ->where('user_id', $userId)
+        $soonTasks = Task::where('user_id', $userId)
+            ->where(function ($query) {
+                $query->where("status_id", 1)
+                    ->orWhere("status_id", 5);
+            })
+            ->whereNotNull('date')
             ->where("priority_id", "!=", "3")
             ->whereDate('date', '<=', $nextWeek)
             ->leftJoin('contacts', 'tasks.contact_id', '=', 'contacts.id')
             ->leftJoin('priorities', 'tasks.priority_id', '=', 'priorities.id')
             ->orderBy("tasks.date", "asc")
-            ->get([
-                'tasks.*'
-            ]);
-
-
+            ->get(['tasks.*']);
 
         return view("welcome", [
             'user' => $user,
@@ -61,29 +64,26 @@ class WelcomeController extends Controller
         $month = $request->query('month', now()->month);
         $userId = Auth::id();
 
-        $deals = Deal::withTrashed()
-            ->where('user_id', $userId)
+        $deals = Deal::where('user_id', $userId)
             ->whereHas('phase', function ($query) {
                 $query->whereIn('id', [1, 2, 3, 4, 5]);
             })
-            ->when($month, function ($query, $month) {
-                return $query
-                    ->where(function ($q) use ($month) {
-                        $q->whereNotNull('deleted_at')->whereMonth('deleted_at', $month);
-                    })
-                    ->orWhere(function ($q) use ($month) {
-                        $q->whereNull('deleted_at')->whereMonth('updated_at', $month);
-                    });
+            ->when($month, function ($query, $month) use ($userId) {
+                return $query->where(function ($q) use ($month, $userId) {
+                    $q->where('user_id', $userId)
+                        ->where(function ($subQ) use ($month) {
+                            $subQ->whereNotNull('deleted_at')
+                                ->whereMonth('deleted_at', $month);
+                        })
+                        ->orWhere(function ($subQ) use ($month) {
+                            $subQ->whereNull('deleted_at')
+                                ->whereMonth('updated_at', $month);
+                        });
+                });
             })
             ->with(['phase'])
+            ->withTrashed()
             ->get();
-
-        // if ($deals->isEmpty()) {
-        //     return response()->json([
-        //         'no_data' => true,
-        //         'message' => 'Нет данных для отображения'
-        //     ]);
-        // }
 
         $completed = 0;
         $inProgress = 0;
@@ -130,53 +130,52 @@ class WelcomeController extends Controller
     {
         $userId = Auth::id();
 
-        try {
-            $month = $request->query('month', now()->month);
+        $month = $request->query('month', now()->month);
 
-            $inProgress = Task::where('status_id', 1)
-                ->orWhere('status_id', 5)
-                ->where('user_id', $userId)
-                ->whereMonth('created_at', $month)->count();
+        $inProgress = Task::where('user_id', $userId)
+        ->where(function($query) {
+            $query->where('status_id', 1)
+                  ->orWhere('status_id', 5);
+        })
+        ->whereMonth('created_at', $month)
+        ->count();
 
-            $completed = Task::where('status_id', 2)
-                ->where('user_id', $userId)
-                ->whereNotNull('deleted_at')
-                ->whereMonth('deleted_at', $month)
-                ->withTrashed()
-                ->count();
+        $completed = Task::where('status_id', 2)
+            ->where('user_id', $userId)
+            ->whereNotNull('deleted_at')
+            ->whereMonth('deleted_at', $month)
+            ->withTrashed()
+            ->count();
 
-            $overdue = Task::where('status_id', 3)
-                ->where('user_id', $userId)
-                ->whereNotNull('deleted_at')
-                ->whereMonth('deleted_at', $month)
-                ->withTrashed()
-                ->count();
+        $overdue = Task::where('status_id', 3)
+            ->where('user_id', $userId)
+            ->whereNotNull('deleted_at')
+            ->whereMonth('deleted_at', $month)
+            ->withTrashed()
+            ->count();
 
-            $canceled = Task::where('status_id', 4)
-                ->where('user_id', $userId)
-                ->whereNotNull('deleted_at')
-                ->whereMonth('deleted_at', $month)
-                ->withTrashed()
-                ->count();
+        $canceled = Task::where('status_id', 4)
+            ->where('user_id', $userId)
+            ->whereNotNull('deleted_at')
+            ->whereMonth('deleted_at', $month)
+            ->withTrashed()
+            ->count();
 
-            $total = $inProgress + $completed + $overdue + $canceled;
+        $total = $inProgress + $completed + $overdue + $canceled;
 
-            return response()->json([
-                'chart' => [
-                    'labels' => ['В процессе', 'Завершённые', 'Просроченные', 'Отменённые'],
-                    'data' => [$inProgress, $completed, $overdue, $canceled],
-                ],
-                'summary' => [
-                    'total' => $total,
-                    'in_progress' => $inProgress,
-                    'completed' => $completed,
-                    'overdue' => $overdue,
-                    'canceled' => $canceled,
-                    'percent_completed' => $total > 0 ? round(($completed / $total) * 100, 1) : 0,
-                ]
-            ]);
-        } catch (Exception $e) {
-            return response()->json(['error' => 'Ошибка при получении данных: ' . $e->getMessage()], 500);
-        }
+        return response()->json([
+            'chart' => [
+                'labels' => ['В процессе', 'Завершённые', 'Просроченные', 'Отменённые'],
+                'data' => [$inProgress, $completed, $overdue, $canceled],
+            ],
+            'summary' => [
+                'total' => $total,
+                'in_progress' => $inProgress,
+                'completed' => $completed,
+                'overdue' => $overdue,
+                'canceled' => $canceled,
+                'percent_completed' => $total > 0 ? round(($completed / $total) * 100, 1) : 0,
+            ]
+        ]);
     }
 }
