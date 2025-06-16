@@ -22,7 +22,7 @@
                     <div class="filter">
                         <label for="yearFilter">Выберите год:</label>
                         <select name="year" id="yearFilter">
-                            @for ($y = now()->year - 5; $y <= now()->year + 1; $y++)
+                            @for ($y = now()->year - 5; $y <= now()->year; $y++)
                                 <option value="{{ $y }}" {{ $y == now()->year ? 'selected' : '' }}>
                                     {{ $y }}
                                 </option>

@@ -118,33 +118,6 @@ class AnalyticsController extends Controller
             ]
         ]);
     }
-
-    // public function getAllTimeData()
-    // {
-    //     $userId = Auth::id();
-
-    //     $deals = Deal::where('user_id', $userId)
-    //         ->whereHas('phase', function ($query) {
-    //             $query->whereIn('id', [1, 2, 3, 4, 5]);
-    //         })
-    //         ->withTrashed()
-    //         ->get();
-
-    //     $totalCompleted = $deals->where('phase_id', 4)->count();
-    //     $totalCanceled = $deals->where('phase_id', 5)->count();
-    //     $totalInProgress = $deals->whereIn('phase_id', [1, 2, 3])->count();
-
-    //     return response()->json([
-    //         'summary' => [
-    //             'completed' => $totalCompleted,
-    //             'canceled' => $totalCanceled,
-    //             'inProgress' => $totalInProgress,
-    //             'total' => $totalCompleted + $totalCanceled + $totalInProgress,
-    //             'percentCompleted' => $totalCompleted > 0 ? round(($totalCompleted / ($totalCompleted + $totalCanceled + $totalInProgress)) * 100, 1) . '%' : '0%',
-    //             'percentInProgress' => $totalInProgress > 0 ? round(($totalInProgress / ($totalCompleted + $totalCanceled + $totalInProgress)) * 100, 1) . '%' : '0%'
-    //         ]
-    //     ]);
-    // }
     public function getAllTimeData()
     {
         $userId = Auth::id();
