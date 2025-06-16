@@ -34,6 +34,7 @@ class AnalyticsController extends Controller
 
     public function getData(Request $request)
     {
+        $userId = Auth::id();
         $year = $request->query('year', now()->year);
 
         $monthNames = [
@@ -58,6 +59,7 @@ class AnalyticsController extends Controller
         $canceled = array_fill(0, 12, 0);
 
         $deals = Deal::withTrashed()
+            ->where('user_id', $userId)
             ->whereHas('phase', function ($query) {
                 $query->whereIn('id', [1, 2, 3, 4, 5]);
             })
@@ -115,7 +117,10 @@ class AnalyticsController extends Controller
 
     public function getAllTimeData()
     {
+        $userId = Auth::id();
+
         $deals = Deal::withTrashed()
+            ->where('user_id', $userId)
             ->whereHas('phase', function ($query) {
                 $query->whereIn('id', [1, 2, 3, 4, 5]);
             })
