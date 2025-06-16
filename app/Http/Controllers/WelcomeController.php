@@ -28,9 +28,9 @@ class WelcomeController extends Controller
         $nextWeek = now()->addDays(7); // Через 7 дней
 
         $actualTasks = Task::orderBy("date", "asc")
+        ->where('user_id', $userId)
             ->where("status_id", 1)
             ->orWhere("status_id", 5)
-            ->where('user_id', $userId)
             ->get();
 
         $soonTasks = Task::whereNotNull('date')
