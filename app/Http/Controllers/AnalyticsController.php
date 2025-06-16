@@ -58,20 +58,24 @@ class AnalyticsController extends Controller
         $inProgress = array_fill(0, 12, 0);
         $canceled = array_fill(0, 12, 0);
 
-        $deals = Deal::withTrashed()
-            ->where('user_id', $userId)
+        $deals = Deal::where('user_id', $userId)
             ->whereHas('phase', function ($query) {
                 $query->whereIn('id', [1, 2, 3, 4, 5]);
             })
-            ->when($year, function ($query, $year) {
-                return $query
-                    ->where(function ($q) use ($year) {
-                        $q->whereNotNull('deleted_at')->whereYear('deleted_at', $year);
-                    })
-                    ->orWhere(function ($q) use ($year) {
-                        $q->whereNull('deleted_at')->whereYear('updated_at', $year);
-                    });
+            ->when($year, function ($query) use ($year, $userId) {
+                return $query->where(function ($q) use ($year, $userId) {
+                    $q->where('user_id', $userId)
+                        ->where(function ($subQ) use ($year) {
+                            $subQ->whereNotNull('deleted_at')
+                                ->whereYear('deleted_at', $year);
+                        })
+                        ->orWhere(function ($subQ) use ($year) {
+                            $subQ->whereNull('deleted_at')
+                                ->whereYear('updated_at', $year);
+                        });
+                });
             })
+            ->withTrashed()
             ->get();
 
         foreach ($deals as $deal) {
@@ -115,29 +119,70 @@ class AnalyticsController extends Controller
         ]);
     }
 
+    // public function getAllTimeData()
+    // {
+    //     $userId = Auth::id();
+
+    //     $deals = Deal::where('user_id', $userId)
+    //         ->whereHas('phase', function ($query) {
+    //             $query->whereIn('id', [1, 2, 3, 4, 5]);
+    //         })
+    //         ->withTrashed()
+    //         ->get();
+
+    //     $totalCompleted = $deals->where('phase_id', 4)->count();
+    //     $totalCanceled = $deals->where('phase_id', 5)->count();
+    //     $totalInProgress = $deals->whereIn('phase_id', [1, 2, 3])->count();
+
+    //     return response()->json([
+    //         'summary' => [
+    //             'completed' => $totalCompleted,
+    //             'canceled' => $totalCanceled,
+    //             'inProgress' => $totalInProgress,
+    //             'total' => $totalCompleted + $totalCanceled + $totalInProgress,
+    //             'percentCompleted' => $totalCompleted > 0 ? round(($totalCompleted / ($totalCompleted + $totalCanceled + $totalInProgress)) * 100, 1) . '%' : '0%',
+    //             'percentInProgress' => $totalInProgress > 0 ? round(($totalInProgress / ($totalCompleted + $totalCanceled + $totalInProgress)) * 100, 1) . '%' : '0%'
+    //         ]
+    //     ]);
+    // }
     public function getAllTimeData()
     {
         $userId = Auth::id();
 
-        $deals = Deal::withTrashed()
-            ->where('user_id', $userId)
+        // Получаем количество завершенных сделок
+        $totalCompleted = Deal::where('user_id', $userId)
             ->whereHas('phase', function ($query) {
-                $query->whereIn('id', [1, 2, 3, 4, 5]);
+                $query->where('id', 4); // Только завершенные
             })
-            ->get();
+            ->withTrashed()
+            ->count();
 
-        $totalCompleted = $deals->where('phase_id', 4)->count();
-        $totalCanceled = $deals->where('phase_id', 5)->count();
-        $totalInProgress = $deals->whereIn('phase_id', [1, 2, 3])->count();
+        // Получаем количество отмененных сделок
+        $totalCanceled = Deal::where('user_id', $userId)
+            ->whereHas('phase', function ($query) {
+                $query->where('id', 5); // Только отмененные
+            })
+            ->withTrashed()
+            ->count();
+
+        // Получаем количество сделок в процессе
+        $totalInProgress = Deal::where('user_id', $userId)
+            ->whereHas('phase', function ($query) {
+                $query->whereIn('id', [1, 2, 3]); // Все статусы "в процессе"
+            })
+            ->withTrashed()
+            ->count();
+
+        $total = $totalCompleted + $totalCanceled + $totalInProgress;
 
         return response()->json([
             'summary' => [
                 'completed' => $totalCompleted,
                 'canceled' => $totalCanceled,
                 'inProgress' => $totalInProgress,
-                'total' => $totalCompleted + $totalCanceled + $totalInProgress,
-                'percentCompleted' => $totalCompleted > 0 ? round(($totalCompleted / ($totalCompleted + $totalCanceled + $totalInProgress)) * 100, 1) . '%' : '0%',
-                'percentInProgress' => $totalInProgress > 0 ? round(($totalInProgress / ($totalCompleted + $totalCanceled + $totalInProgress)) * 100, 1) . '%' : '0%'
+                'total' => $total,
+                'percentCompleted' => $total > 0 ? round(($totalCompleted / $total) * 100, 1) . '%' : '0%',
+                'percentInProgress' => $total > 0 ? round(($totalInProgress / $total) * 100, 1) . '%' : '0%'
             ]
         ]);
     }
