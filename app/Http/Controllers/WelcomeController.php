@@ -133,12 +133,12 @@ class WelcomeController extends Controller
         $month = $request->query('month', now()->month);
 
         $inProgress = Task::where('user_id', $userId)
-        ->where(function($query) {
-            $query->where('status_id', 1)
-                  ->orWhere('status_id', 5);
-        })
-        ->whereMonth('created_at', $month)
-        ->count();
+            ->where(function ($query) {
+                $query->where('status_id', 1)
+                    ->orWhere('status_id', 5);
+            })
+            ->whereMonth('created_at', $month)
+            ->count();
 
         $completed = Task::where('status_id', 2)
             ->where('user_id', $userId)

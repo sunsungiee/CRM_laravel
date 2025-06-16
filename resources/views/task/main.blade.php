@@ -58,7 +58,20 @@
                             <p><b>Исполнитель: </b> {{ $task->user['surname'] }} {{ $task->user['name'] }}</p>
                             <br>
                             <div class="kanban_actions">
+                                <div class="actions">
 
+                                    {{-- кнопка "В процессе" --}}
+                                    <form action="{{ route('task.change_status', $task->id) }}" method="post"
+                                        class="delete_form">
+                                        @csrf
+                                        @method('patch')
+                                        <input type="hidden" value="1" name="status_id">
+                                        <button class="btn-done" id="btn-done" title="В процессе"
+                                            data-id="{{ $task->id }}">
+                                            <img src="{{ asset('images/icons/proccess4.png') }}" alt="В процессе">
+                                        </button>
+                                    </form>
+                                </div>
                                 <div class="actions">
                                     {{-- кнопка "изменить" --}}
                                     <button class="edit-btn_task" title="Редактировать" type="button"
@@ -83,6 +96,7 @@
                     @endforeach
                 </div>
             </div>
+
             <div class="kanban_column" data-status="in_progress">
                 <h3>В процессе</h3>
                 <hr>
